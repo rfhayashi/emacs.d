@@ -1,0 +1,16 @@
+auto-save-list/
+straight/build
+straight/modified
+build-cache.el
+repos
+transient
+eshell
+projectile-bookmarks.eld
+projectile.cache
+.lsp-session-*
+forge-database.sqlite
+session.*
+bookmarks
+.org-id-locations
+url/
+config.el

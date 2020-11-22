@@ -1,0 +1,317 @@
+#+title: Emacs Config
+#+author: Rui Hayashi
+
+* Introduction
+This is my emacs configuration.
+This configuration is meant to be used with [[https://github.com/plexus/chemacs][chemacs]].
+Since it is also based on [[https://github.com/raxod502/straight.el][Straight]], chemacs profile should activate it. E.g.
+
+#+begin_src emacs-lisp :tangle no
+  ; ~/.emacs-profiles.el example
+  (("default" . ((user-emacs-directory . "<this repo dir>")
+		 (straight-p . t))))
+#+end_src
+
+* Hide menu/toolbar/scroolbar
+  We don't want to use the mouse anyway :P
+  We also want to use as much screen as possible
+  #+begin_src emacs-lisp
+    (menu-bar-mode -1)
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1)
+
+    (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  #+end_src
+  
+* Straight/use-package setup
+  [[https://github.com/raxod502/straight.el][Straight]] let us have a functional package management.
+  This section integrates straight and [[https://github.com/jwiegley/use-package][use-package]].
+  #+begin_src emacs-lisp
+    (setq straight-use-package-by-default t)
+
+    (straight-use-package 'use-package)
+  #+end_src
+
+* Miscelaneous
+** Disable backup files
+   #+begin_src emacs-lisp
+     (setq make-backup-files nil)
+   #+end_src
+** Enable which-key
+   [[https://github.com/justbur/emacs-which-key][which-key]] shows the available key bindings in the mini buffer
+   #+begin_src emacs-lisp
+     (use-package
+       which-key
+       :config
+       (which-key-mode))
+   #+end_src
+** Markdown/Json/Yaml modes
+   Since we all end up editing some markdown/json/yaml every day.
+   #+begin_src emacs-lisp
+     (use-package
+       markdown-mode)
+
+     (use-package
+       yaml-mode)
+
+     (use-package
+       json-mode)
+   #+end_src
+* Look and feel
+** Theme
+   Thank you Batsov. This is [[https://github.com/bbatsov/zenburn-emacs][beautiful]].
+   #+begin_src emacs-lisp
+     (use-package
+       zenburn-theme
+       :config
+       (load-theme 'zenburn t))
+   #+end_src
+** Font
+   #+begin_src emacs-lisp
+     (set-frame-font "Source Code Pro 13" nil t)
+   #+end_src
+** Winum
+   [[https://github.com/deb0ch/emacs-winum][Winum]] decorates windows with a number to make it easier to jump from one window to another.
+   #+begin_src emacs-lisp
+     (use-package winum
+       :config
+       (require 'winum)
+       (winum-mode))
+   #+end_src
+* Evil setup
+  Modal editing + Emacs rocks and is a little [[https://github.com/emacs-evil/evil][evil]] :)
+  [[https://github.com/emacs-evil/evil-collection][Evil Collection]] spare us the time of setting up evil.
+  #+begin_src emacs-lisp
+    (use-package
+      evil
+      :init
+      (setq evil-want-keybinding nil)
+      (setq evil-want-integration t)
+      :config
+      (evil-mode 1))
+
+    (use-package
+      evil-collection
+      :init
+      (evil-collection-init)
+      :custom
+      (evil-collection-setup-minibuffer t))
+  #+end_src
+* Keybindings
+  #+begin_src emacs-lisp
+(use-package corkey
+  :straight (corkey
+             :type git
+             :host github
+             :branch "main"
+             :files ("corkey/corkey.el")
+             :repo "lambdaisland/corgi-packages")
+  :config
+  (global-corkey-mode 1)
+  ;; Move to the front so these keys always have priority
+  (setq minor-mode-map-alist
+        (cons
+         (cons 'corkey-mode corkey/keymap)
+         (delq corkey-mode minor-mode-map-alist))))
+
+  #+end_src
+* Auto Completion
+  [[https://github.com/company-mode/company-mode][Company]] to the rescue
+  #+begin_src emacs-lisp
+    (use-package
+      company
+      :config
+      (global-company-mode))
+  #+end_src
+* Structural Editing
+  Because parenthesis matter, and [[https://www.emacswiki.org/emacs/ParEdit][paredit]] takes control of them.
+  [[https://www.emacswiki.org/emacs/ShowParenMode][show-paren-mode]] shows matching parens.
+  #+begin_src emacs-lisp
+    (show-paren-mode)
+
+    (defmacro user/setup-paredit-for (language)
+      `(add-hook
+	(quote ,(make-symbol (concat (symbol-name language) "-mode-hook")))
+	#'enable-paredit-mode))
+
+    (use-package
+      paredit
+      :config
+      (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode))
+  #+end_src
+* Helm
+  [[https://emacs-helm.github.io/helm/][Helm]] offers a completion mechanism to find files, projects and other things.
+  TAB key is redefined such as it behaves like it traditionally does in regular Emacs.
+  #+begin_src emacs-lisp
+    (use-package
+      helm
+      :config
+      (define-key helm-map (kbd "TAB") #'helm-execute-persistent-action)
+      (define-key helm-map (kbd "<tab>") #'helm-execute-persistent-action)
+      (define-key helm-map (kbd "C-z") #'helm-select-action))
+
+    (use-package
+      helm-ag)
+  #+end_src
+* Magit
+  Work with git with a little bit of [[https://magit.vc/][magit]]
+  #+begin_src emacs-lisp
+    (use-package
+      magit)
+
+    (use-package
+      evil-magit)
+  #+end_src
+* Projectile
+  Sets up [[https://github.com/bbatsov/projectile][Projectile]].
+  #+begin_src emacs-lisp
+    (use-package
+     projectile
+     :config
+     (projectile-mode +1))
+
+    (use-package
+     helm-projectile)
+  #+end_src
+* Clojure
+  Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
+  #+begin_src emacs-lisp
+    (defun my/cider-test-run-focused-test ()
+      "Run test around point"
+      (interactive)
+      (cider-load-buffer)
+      (cider-test-run-test))
+
+    (defun my/cider-test-run-ns-tests ()
+      "Run namespace test"
+      (interactive)
+      (cider-load-buffer)
+      (cider-test-run-ns-tests nil))
+
+    (use-package clojure-mode
+      :config
+      (add-hook 'clojure-mode-hook #'enable-paredit-mode))
+
+    (use-package cider
+      :config
+      (setq cider-save-file-on-load t)
+      (setq cider-repl-pop-to-buffer-on-connect nil)
+      (setq cider-test-defining-forms '("deftest" "defspec" "defflow"))
+      (setq org-babel-clojure-backend 'cider))
+
+    (use-package lsp-mode
+      :config
+      (dolist (m '(clojure-mode
+		   clojurec-mode
+		   clojurescript-mode
+		   clojurex-mode))
+	(add-to-list 'lsp-language-id-configuration `(,m . "clojure")))
+      (setq lsp-enable-indentation nil)
+      (add-hook 'clojure-mode-hook #'lsp)
+      (add-hook 'clojurec-mode-hook #'lsp)
+      (add-hook 'clojurescript-mode-hook #'lsp))
+
+    (use-package clj-refactor
+      :config
+      (clj-refactor-mode 1))
+  #+end_src
+* Scratch
+  [[https://github.com/ffevotte/scratch.el][scratch]] make it easier to create scratch buffers. This is augmented with scratch-buffer-setup function
+  by Protesilaos Stavrou ([[https://protesilaos.com/codelog/2020-08-03-emacs-custom-functions-galore/][See]]).
+  #+begin_src emacs-lisp
+    (use-package scratch
+      :config
+      (defun prot/scratch-buffer-setup ()
+	"Add contents to `scratch' buffer and name it accordingly."
+	(let* ((mode (format "%s" major-mode))
+	       (string (concat "Scratch buffer for: " mode "\n\n")))
+	  (when scratch-buffer
+	    (save-excursion
+	      (insert string)
+	      (goto-char (point-min))
+	      (comment-region (point-at-bol) (point-at-eol)))
+	    (forward-line 2))
+	  (rename-buffer (concat "*Scratch for " mode "*") t)))
+      (add-hook 'scratch-create-buffer-hook 'prot/scratch-buffer-setup))
+  #+end_src
+* Org mode
+  My [[https://orgmode.org/][org mode]] and [[https://github.com/org-roam/org-roam][org roam]] setup.
+  #+begin_src emacs-lisp
+    (with-eval-after-load 'org
+      (require 'ob-shell)
+      (require 'ob-clojure)
+      (add-hook 'org-mode-hook #'enable-paredit-mode)
+      (setq org-confirm-babel-evaluate nil))
+
+    (use-package evil-org
+      :after org
+      :config
+      (add-hook 'org-mode-hook 'evil-org-mode)
+      (add-hook 'evil-org-mode-hook
+		(lambda ()
+		  (evil-org-set-key-theme)))
+      (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading)))
+
+    (defconst rfh/org-roam-dir "~/dev/org-roam")
+
+    (use-package org-roam
+      :config
+      (setq org-roam-directory rfh/org-roam-dir)
+      (setq org-roam-completion-system 'helm)
+      (add-hook 'after-init-hook 'org-roam-mode))
+
+    (use-package company-org-roam
+      :after company
+      :straight (:host github :repo "org-roam/company-org-roam")
+      :config
+      (push 'company-org-roam company-backends))
+
+  #+end_src
+
+* Babashka
+  Makes it possible to use [[https://github.com/borkdude/babashka][babashka]] via [[https://orgmode.org/worg/org-contrib/babel/][org babel]].
+** TODO make it possible to define backend (right now only babashka works)
+   #+begin_src emacs-lisp :tangle no
+     (defun ob-clojure-eval-with-bb (expanded params)
+	   "Evaluate EXPANDED code block with PARAMS using babashka."
+	   (unless (executable-find "bb")
+	     (user-error "Babashka not installed"))
+	   (let* ((stdin (let ((stdin (cdr (assq :stdin params))))
+			   (when stdin
+			     (elisp->clj
+			      (org-babel-ref-resolve stdin)))))
+		  (input (cdr (assq :input params)))
+		  (file (make-temp-file "ob-clojure-bb" nil nil expanded))
+		  (command (concat (when stdin (format "echo %s | " (shell-quote-argument stdin)))
+				   (format "bb %s -f %s"
+					   (cond
+					    ((equal input "edn") "")
+					    ((equal input "text") "-i")
+					    (t ""))
+					   (shell-quote-argument file))))
+		  (result (shell-command-to-string command)))
+	     (string-trim result)))
+
+     (defun org-babel-execute:clojure (body params)
+       "Execute a block of Clojure code with Babel."
+       ;(unless org-babel-clojure-backend
+	 ;(user-error "You need to customize org-babel-clojure-backend"))
+       (let* ((org-babel-clojure-backend 'babashka)
+	      (expanded (org-babel-expand-body:clojure body params))
+	      (result-params (cdr (assq :result-params params)))
+	      result)
+	 (setq result
+	       (cond
+		((eq org-babel-clojure-backend 'inf-clojure)
+		 (ob-clojure-eval-with-inf-clojure expanded params))
+		((eq org-babel-clojure-backend 'cider)
+		 (ob-clojure-eval-with-cider expanded params))
+		((eq org-babel-clojure-backend 'slime)
+		 (ob-clojure-eval-with-slime expanded params))
+		((eq org-babel-clojure-backend 'babashka)
+		 (ob-clojure-eval-with-bb expanded params))))
+	 (org-babel-result-cond result-params
+	   result
+	   (condition-case nil (org-babel-script-escape result)
+	     (error result)))))
+   #+end_src
