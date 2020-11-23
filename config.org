@@ -9,7 +9,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
 #+begin_src emacs-lisp :tangle no
   ; ~/.emacs-profiles.el example
   (("default" . ((user-emacs-directory . "<this repo dir>")
-		 (straight-p . t))))
+                (straight-p . t))))
 #+end_src
 
 * Hide menu/toolbar/scroolbar
