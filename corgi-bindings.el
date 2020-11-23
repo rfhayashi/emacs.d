@@ -45,11 +45,11 @@
    ;; mode, but we don't want to copy lisp editing mode, so we might look for
    ;; more suitable bindings for this
    ("k" "Structural editing"
-    ("s" :sexp/slurp-forward)
-    ("b" :sexp/barf-forward)
-    ("d" :sexp/kill)
-    ("r" :sexp/raise)
-    ("p" :sexp/splice))
+    ("s" "Slurp Forward" :sexp/slurp-forward)
+    ("b" "Barf Forward" :sexp/barf-forward)
+    ("d" "Kill" :sexp/kill)
+    ("r" "Raise" :sexp/raise)
+    ("p" "Splice" :sexp/splice))
 
    ("r" "Org Roam"
     ("f" "Find file" org-roam-find-file)
@@ -147,7 +147,7 @@
                  :eval/last-sexp cider-eval-last-sexp
                  :eval/last-sexp-pprint cider-pprint-eval-last-sexp
                  :eval/last-sexp-pprint-comment cider-pprint-eval-last-sexp-to-comment
-		 :eval/top-level-form cider-eval-defun
+		 :eval/top-level-form cider-eval-defun-at-point
                  :eval/ns-form cider-eval-ns-form
                  :eval/last-sexp-replace cider-eval-last-sexp-and-replace
                  :eval/buffer cider-eval-buffer
