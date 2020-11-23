@@ -41,9 +41,6 @@
     ("o" "Go to other window" other-window)
     ("d" "Delete window" delete-window))
 
-   ;; TODO: this is temporary, using the keybinding from Spacemac's lisp editing
-   ;; mode, but we don't want to copy lisp editing mode, so we might look for
-   ;; more suitable bindings for this
    ("k" "Structural editing"
     ("s" "Slurp Forward" :sexp/slurp-forward)
     ("b" "Barf Forward" :sexp/barf-forward)
