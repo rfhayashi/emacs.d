@@ -99,20 +99,20 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
   #+end_src
 * Keybindings
   #+begin_src emacs-lisp
-(use-package corkey
-  :straight (corkey
-             :type git
-             :host github
-             :branch "main"
-             :files ("corkey/corkey.el")
-             :repo "lambdaisland/corgi-packages")
-  :config
-  (global-corkey-mode 1)
-  ;; Move to the front so these keys always have priority
-  (setq minor-mode-map-alist
-        (cons
-         (cons 'corkey-mode corkey/keymap)
-         (delq corkey-mode minor-mode-map-alist))))
+    (use-package corkey
+      :straight (corkey
+		 :type git
+		 :host github
+		 :branch "main"
+		 :files ("corkey/corkey.el")
+		 :repo "lambdaisland/corgi-packages")
+      :config
+      (global-corkey-mode 1)
+      ;; Move to the front so these keys always have priority
+      (setq minor-mode-map-alist
+	    (cons
+	     (cons 'corkey-mode corkey/keymap)
+	     (delq corkey-mode minor-mode-map-alist))))
 
   #+end_src
 * Auto Completion

@@ -20,7 +20,8 @@
    ("p" "Project"
     ("f" "Find file" helm-projectile-find-file)
     ("p" "Switch project" helm-projectile-switch-project)
-    ("b" "Switch to buffer" helm-projectile-switch-to-buffer))
+    ("b" "Switch to buffer" helm-projectile-switch-to-buffer)
+    ("'" "Start a shell" projectile-run-shell))
 
    ("g" "Git"
     ("s" "Magit Status" magit-status))
