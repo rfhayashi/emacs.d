@@ -192,12 +192,28 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       :config
       (add-hook 'clojure-mode-hook #'enable-paredit-mode))
 
+    (defun my/setup-matcher-combinators ()
+      (cider-add-to-alist 'cider-jack-in-lein-plugins "cider/cider-nrepl" "0.25.5")
+
+      (advice-add 'cider-ansi-color-string-p :override
+		  (lambda (string) (string-match "\\[" string)))
+
+      (advice-add 'cider-font-lock-as
+		  :before
+		  (lambda (&rest r)
+		    (advice-add 'substring-no-properties :override #'identity)))
+      (advice-add 'cider-font-lock-as
+		  :after
+		  (lambda (&rest r)
+		    (advice-remove 'substring-no-properties #'identity))))
+
     (use-package cider
       :config
       (setq cider-save-file-on-load t)
       (setq cider-repl-pop-to-buffer-on-connect nil)
       (setq cider-test-defining-forms '("deftest" "defspec" "defflow"))
-      (setq org-babel-clojure-backend 'cider))
+      (setq org-babel-clojure-backend 'cider)
+      (my/setup-matcher-combinators))
 
     (use-package lsp-mode
       :config
@@ -270,7 +286,6 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
 
 * Babashka
   Makes it possible to use [[https://github.com/borkdude/babashka][babashka]] via [[https://orgmode.org/worg/org-contrib/babel/][org babel]].
-** TODO make it possible to define backend (right now only babashka works)
    #+begin_src emacs-lisp :tangle no
      (defun ob-clojure-eval-with-bb (expanded params)
 	   "Evaluate EXPANDED code block with PARAMS using babashka."
@@ -296,8 +311,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
        "Execute a block of Clojure code with Babel."
        ;(unless org-babel-clojure-backend
 	 ;(user-error "You need to customize org-babel-clojure-backend"))
-       (let* ((org-babel-clojure-backend 'babashka)
-	      (expanded (org-babel-expand-body:clojure body params))
+       (let* ((expanded (org-babel-expand-body:clojure body params))
 	      (result-params (cdr (assq :result-params params)))
 	      result)
 	 (setq result
