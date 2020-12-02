@@ -309,20 +309,25 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
 
      (defun org-babel-execute:clojure (body params)
        "Execute a block of Clojure code with Babel."
-       ;(unless org-babel-clojure-backend
-	 ;(user-error "You need to customize org-babel-clojure-backend"))
-       (let* ((expanded (org-babel-expand-body:clojure body params))
+  
+       (message (a-get params :backend))
+       (let* ((backend (if-let ((backend-s (a-get params :backend)))
+			   (intern backend-s)
+			 org-babel-clojure-backend))
+	      (expanded (org-babel-expand-body:clojure body params))
 	      (result-params (cdr (assq :result-params params)))
 	      result)
+	 (unless backend
+	   (user-error "You need to customize org-babel-clojure-backend"))
 	 (setq result
 	       (cond
-		((eq org-babel-clojure-backend 'inf-clojure)
+		((eq backend 'inf-clojure)
 		 (ob-clojure-eval-with-inf-clojure expanded params))
-		((eq org-babel-clojure-backend 'cider)
+		((eq backend 'cider)
 		 (ob-clojure-eval-with-cider expanded params))
-		((eq org-babel-clojure-backend 'slime)
+		((eq backend 'slime)
 		 (ob-clojure-eval-with-slime expanded params))
-		((eq org-babel-clojure-backend 'babashka)
+		((eq backend 'babashka)
 		 (ob-clojure-eval-with-bb expanded params))))
 	 (org-babel-result-cond result-params
 	   result
