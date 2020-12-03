@@ -289,6 +289,13 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
 
 * Babashka
   Makes it possible to use [[https://github.com/borkdude/babashka][babashka]] via [[https://orgmode.org/worg/org-contrib/babel/][org babel]].
+
+  To enable that you can either ~(setq org-babel-clojure-backend 'babashka)~, which will always use babashka when
+  using clojure as language, or you can add a header argument ~:backend babashka~, which will only apply to
+  a specific source block. Note that you need to have babashka installed in your system.
+
+  This code was forked from https://git.jeremydormitzer.com/jdormit/dotfiles/commit/5f9dbe53cea2b37fc89cc49f858f98387da99576
+  with a few modifications.
    #+begin_src emacs-lisp :tangle no
      (defun ob-clojure-eval-with-bb (expanded params)
 	   "Evaluate EXPANDED code block with PARAMS using babashka."
