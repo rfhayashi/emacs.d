@@ -178,6 +178,7 @@
                  :repl/jack-in-combined ("Jack in Clj+Cljs" cider-jack-in-clj&cljs)))
 
   (org-mode (:eval/top-level-form org-babel-execute-src-block
+	     :eval/buffer org-babel-execute-buffer
 	     :jump/definition org-open-at-point))
 
   (cider-repl-mode ( :repl/toggle cider-switch-to-last-clojure-buffer

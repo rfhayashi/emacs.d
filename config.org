@@ -1,5 +1,6 @@
 #+title: Emacs Config
 #+author: Rui Hayashi
+#+PROPERTY: header-args :results silent
 
 * Introduction
 This is my emacs configuration.
@@ -79,7 +80,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
        (winum-mode))
    #+end_src
 * Evil setup
-  Modal editing + Emacs rocks and is a little [[https://github.com/emacs-evil/evil][evil]] :)
+  Modal editing + Emacs rocks and is a little [[https://github.com/emacs-evil/evil][evil]]
   [[https://github.com/emacs-evil/evil-collection][Evil Collection]] spare us the time of setting up evil.
   #+begin_src emacs-lisp
     (use-package
@@ -115,6 +116,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
 	     (delq corkey-mode minor-mode-map-alist))))
 
   #+end_src
+
 * Auto Completion
   [[https://github.com/company-mode/company-mode][Company]] to the rescue
   #+begin_src emacs-lisp
@@ -213,6 +215,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       (setq cider-repl-pop-to-buffer-on-connect nil)
       (setq cider-test-defining-forms '("deftest" "defspec" "defflow"))
       (setq org-babel-clojure-backend 'cider)
+      (setq clojure-toplevel-inside-comment-form t)
       (my/setup-matcher-combinators))
 
     (use-package lsp-mode
@@ -309,8 +312,6 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
 
      (defun org-babel-execute:clojure (body params)
        "Execute a block of Clojure code with Babel."
-  
-       (message (a-get params :backend))
        (let* ((backend (if-let ((backend-s (a-get params :backend)))
 			   (intern backend-s)
 			 org-babel-clojure-backend))
