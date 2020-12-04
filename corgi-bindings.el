@@ -51,7 +51,7 @@
 
    ("r" "Org Roam"
     ("f" "Find file" org-roam-find-file)
-    ("r" "Today's file" org-roam-dailies-today))
+    ("r" "Today's file" org-roam-dailies-find-today))
 
    ("t" "Toggle modes"
     ("l" "Toggle line numbers" linum-mode))
@@ -125,7 +125,7 @@
  :modes
  ((global ( :sexp/slurp-forward paredit-forward-slurp-sexp
 	    :sexp/barf-forward paredit-forward-barf-sexp
-	    :sexp/kill paredit-kill
+	    :sexp/kill kill-sexp
 	    :sexp/raise paredit-raise-sexp
 	    :sexp/splice paredit-splice-sexp))
 
