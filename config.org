@@ -58,6 +58,10 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
      (use-package
        json-mode)
    #+end_src
+** Disable using tabs in indentation
+   #+begin_src emacs-lisp
+     (setq-default indent-tabs-mode nil)
+   #+end_src
 * Look and feel
 ** Theme
    Thank you Batsov. This is [[https://github.com/bbatsov/zenburn-emacs][beautiful]].
