@@ -161,7 +161,7 @@
                  :repl/other cider-repl-switch-to-other
                  :repl/connect cider-connect
 
-                 :jump/definition cider-find-var
+                 :jump/definition lsp-find-definition
                  :jump/back cider-pop-back
                  :jump/ns cider-find-ns
 
