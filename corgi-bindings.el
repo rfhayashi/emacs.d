@@ -91,7 +91,8 @@
     ("s" "Toggle REPL" :repl/toggle)
     ("q" "Quit current REPL" :repl/quit)
     ("o" "Switch to Other REPL" :repl/other)
-    ("s" "Connect to REPL" :repl/connect))
+    ("s" "Connect to REPL" :repl/connect)
+    ("x" "Refresh namespaces" :repl/refresh))
 
    ("g" "Go places"
     ("g" "Go to definition" :jump/definition)
@@ -160,6 +161,7 @@
                  :repl/quit cider-quit
                  :repl/other cider-repl-switch-to-other
                  :repl/connect cider-connect
+                 :repl/refresh cider-refresh 
 
                  :jump/definition lsp-find-definition
                  :jump/back cider-pop-back
