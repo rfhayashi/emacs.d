@@ -5,6 +5,7 @@
     ("d" "Kill buffer" kill-this-buffer)
     ("l" "List buffers" list-buffers)
     ("r" "Rename buffer" rename-buffer)
+    ("s" "Scratch buffer" scratch)
     ("w" "Toggle read-only" read-only-mode))
 
    ("f" "File commands"
@@ -67,7 +68,8 @@
    ("7" "Select window 7" winum-select-window-7)
    ("8" "Select window 8" winum-select-window-8)
    ("9" "Select window 9" winum-select-window-9)
-   ("0" "Select window 10" winum-select-window-10))
+   ("0" "Select window 10" winum-select-window-10)
+   ("'" "Shell" shell))
 
   ("," "Project specific leader key"
 
@@ -98,6 +100,7 @@
     ("g" "Go to definition" :jump/definition)
     ("b" "Go back" :jump/back)
     ("n" "Go to namespace" :jump/ns)
+    ("r" "Find references" :jump/references)
     ("t" "Go to test/implemenentation" projectile-toggle-between-implementation-and-test))
 
    ("l" "Link to REPL"
@@ -108,6 +111,7 @@
     ("u" "Unlink" sesman-unlink))
 
    ("r" "Refactor"
+    ("r" "Rename" :refactor/rename)
     ("t" "Threading"
      ("f" "Thread first" :refactor/thread-first)
      ("l" "Thread last"  :refactor/thread-last)
@@ -166,7 +170,9 @@
                  :jump/definition lsp-find-definition
                  :jump/back cider-pop-back
                  :jump/ns cider-find-ns
+                 :jump/references lsp-find-references
 
+                 :refactor/rename lsp-rename
                  :refactor/thread-first clojure-thread-first-all
                  :refactor/thread-last clojure-thread-last-all
                  :refactor/unwind-thread clojure-unwind-all
