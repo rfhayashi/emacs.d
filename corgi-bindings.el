@@ -69,7 +69,8 @@
    ("8" "Select window 8" winum-select-window-8)
    ("9" "Select window 9" winum-select-window-9)
    ("0" "Select window 10" winum-select-window-10)
-   ("'" "Shell" shell))
+   ("'" "Shell" shell)
+   ("/" "Find in Project" helm-projectile-ag))
 
   ("," "Project specific leader key"
 
@@ -83,7 +84,8 @@
     ("n" "Eval ns form" :eval/ns-form)
     ("r" "Eval region" :eval/region)
     ("i" "Interrupt eval" :eval/interrupt)
-    ("-" "Eval up to point" :eval/up-to-point))
+    ("-" "Eval up to point" :eval/up-to-point)
+    ("t" "To portal" :eval/to-portal))
 
    ("t" "Run tests"
     ("t" "Focused Test" :run-test/focused)
@@ -187,6 +189,7 @@
 
   (org-mode (:eval/top-level-form org-babel-execute-src-block
 	     :eval/buffer org-babel-execute-buffer
+             :eval/to-portal my/org-babel-execute-src-block-to-clojure-portal
 	     :jump/definition org-open-at-point))
 
   (cider-repl-mode ( :repl/toggle cider-switch-to-last-clojure-buffer

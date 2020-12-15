@@ -62,6 +62,10 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
    #+begin_src emacs-lisp
      (setq-default indent-tabs-mode nil)
    #+end_src
+** Edn parsing
+   #+begin_src emacs-lisp
+     (use-package parseedn)
+   #+end_src
 * Look and feel
 ** Theme
    Thank you Batsov. This is [[https://github.com/bbatsov/zenburn-emacs][beautiful]].
@@ -202,16 +206,16 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       (cider-add-to-alist 'cider-jack-in-lein-plugins "cider/cider-nrepl" "0.25.5")
 
       (advice-add 'cider-ansi-color-string-p :override
-		  (lambda (string) (string-match "\\[" string)))
+                  (lambda (string) (string-match "\\[" string)))
 
       (advice-add 'cider-font-lock-as
-		  :before
-		  (lambda (&rest r)
-		    (advice-add 'substring-no-properties :override #'identity)))
+                  :before
+                  (lambda (&rest r)
+                    (advice-add 'substring-no-properties :override #'identity)))
       (advice-add 'cider-font-lock-as
-		  :after
-		  (lambda (&rest r)
-		    (advice-remove 'substring-no-properties #'identity))))
+                  :after
+                  (lambda (&rest r)
+                    (advice-remove 'substring-no-properties #'identity))))
 
     (use-package cider
       :config
@@ -220,15 +224,16 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       (setq cider-test-defining-forms '("deftest" "defspec" "defflow"))
       (setq org-babel-clojure-backend 'cider)
       (setq clojure-toplevel-inside-comment-form t)
+      (setq cider-clojure-cli-global-options "-A:portal")
       (my/setup-matcher-combinators))
 
     (use-package lsp-mode
       :config
       (dolist (m '(clojure-mode
-		   clojurec-mode
-		   clojurescript-mode
-		   clojurex-mode))
-	(add-to-list 'lsp-language-id-configuration `(,m . "clojure")))
+                   clojurec-mode
+                   clojurescript-mode
+                   clojurex-mode))
+        (add-to-list 'lsp-language-id-configuration `(,m . "clojure")))
       (setq lsp-enable-indentation nil)
       (add-hook 'clojure-mode-hook #'lsp)
       (add-hook 'clojurec-mode-hook #'lsp)
@@ -347,6 +352,22 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
 	     (error result)))))
    #+end_src
 
+* Org Mode + Clojure Portal
+  Function that shows the result of executing a org babel source block in [[https://github.com/djblue/portal][Portal.]]
+  
+  Notes:
+  - Set a ~:portal/cli~ alias in your global deps.edn config ([[https://github.com/djblue/portal#cli-usage][see]]).
+  - In the current form, the process buffer remains open after portal window is closed. Make sure
+    to kill those buffers after some time.
+  #+begin_src emacs-lisp
+    (defun my/org-babel-execute-src-block-to-clojure-portal ()
+           (interactive)
+           (let* ((result (org-babel-execute-src-block))
+                  (temp (make-temp-file "clojure-portal")))
+             (with-temp-file temp
+               (insert (parseedn-print-str result)))
+             (start-process-shell-command "clojure-portal" "clojure-portal-output" (format "cat %s | bb -cp `clojure -Spath -A:portal/cli` -m portal.main edn" temp))))
+  #+end_src
 * Microk8s Org-babel
   #+begin_src emacs-lisp
     ;; possibly require modes required for your language
