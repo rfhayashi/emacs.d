@@ -269,15 +269,16 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       (require 'ob-shell)
       (require 'ob-clojure)
       (add-hook 'org-mode-hook #'enable-paredit-mode)
-      (setq org-confirm-babel-evaluate nil))
+      (setq org-confirm-babel-evaluate nil)
+      (org-babel-lob-ingest (expand-file-name "babel.org" user-emacs-directory)))
 
     (use-package evil-org
       :after org
       :config
       (add-hook 'org-mode-hook 'evil-org-mode)
       (add-hook 'evil-org-mode-hook
-		(lambda ()
-		  (evil-org-set-key-theme)))
+                (lambda ()
+                  (evil-org-set-key-theme)))
       (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading)))
 
     (defconst rfh/org-roam-dir "~/dev/org-roam")
