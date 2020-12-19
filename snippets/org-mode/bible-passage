@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: bible passage
+# key: bible
+# --
+#+call: bible(passage="$0")

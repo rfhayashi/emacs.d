@@ -183,6 +183,12 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
     (use-package
      helm-projectile)
   #+end_src
+* Yasnippet
+  #+begin_src emacs-lisp
+    (use-package yasnippet
+      :config
+      (yas-global-mode 1))
+  #+end_src
 * Clojure
   Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
   #+begin_src emacs-lisp
