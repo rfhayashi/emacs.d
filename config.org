@@ -363,11 +363,12 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
   Function that shows the result of executing a org babel source block in [[https://github.com/djblue/portal][Portal.]]
   
   Notes:
-  - Set a ~:portal/cli~ alias in your global deps.edn config ([[https://github.com/djblue/portal#cli-usage][see]]).
   - In current form closing the portal chrome window puts the system in an inconsistent state
-    requiring an emacs restart.
+    requiring manual cleanup or an emacs restart.
   #+begin_src emacs-lisp
     (setq my/portal-nrepl-port 1900)
+
+    (defconst my/portal-classpath-command "clojure -Spath -Sdeps '{:deps {djblue/portal {:mvn/version \"0.7.0\"}}}'")
 
     (defun my/portal-nrepl-port-open-p ()
       (condition-case nil
@@ -380,8 +381,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
     (defun my/wait-for-portal-nrepl-port ()
       (let ((number-of-tries 0))
         (while (not (my/portal-nrepl-port-open-p))
-          (message (number-to-string number-of-tries))
-          (when (> number-of-tries 10)
+          (when (> number-of-tries 20)
             (error "timeout waiting for port"))
           (setq number-of-tries (+ number-of-tries 1))
           (sleep-for 0.2))))
@@ -391,7 +391,9 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
         (setq my/portal-process
               (start-process-shell-command "clojure-portal"
                                            "clojure-portal-output"
-                                           (format "bb -cp `clojure -Spath -A:portal/cli` --nrepl-server localhost:%s" my/portal-nrepl-port)))
+                                           (format "bb -cp `%s` --nrepl-server %s"
+                                                   my/portal-classpath-command
+                                                   my/portal-nrepl-port)))
         (my/wait-for-portal-nrepl-port)
         (setq my/portal-nrepl-connection
               (cider-connect `(:host "localhost" :port ,my/portal-nrepl-port)))))
