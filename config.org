@@ -405,6 +405,8 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
 
     (defun my/start-portal-instance ()
       ; TODO check if portal was closed
+      ; We could make use of http://http-kit.github.io/http-kit/org.httpkit.server.html#var-on-close
+      ; to detect when the browser window was closed
       (my/start-portal)
       (my/eval-in-portal
        "(require '[portal.api :as p])
