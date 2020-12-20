@@ -364,16 +364,46 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
   
   Notes:
   - Set a ~:portal/cli~ alias in your global deps.edn config ([[https://github.com/djblue/portal#cli-usage][see]]).
-  - In the current form, the process buffer remains open after portal window is closed. Make sure
-    to kill those buffers after some time.
+  - In current form closing the portal chrome window puts the system in an inconsistent state
+    requiring an emacs restart.
   #+begin_src emacs-lisp
+    (setq my/portal-nrepl-connection nil)
+
+    (defun my/start-portal ()
+      ; TODO check if connection is still open
+      (when (not my/portal-nrepl-connection)
+        (setq my/portal-process
+              (start-process-shell-command "clojure-portal"
+                                           "clojure-portal-output"
+                                           "bb -cp `clojure -Spath -A:portal/cli` --nrepl-server"))
+        (sleep-for 1) ;; TODO parse portal-process buffer to detect nrepl server is up
+        (setq my/portal-nrepl-connection
+              (cider-connect '(:host "localhost" :port 1667)))))
+
+    (defun my/eval-in-portal (code)
+      (nrepl-send-sync-request
+       `("op" "eval" "code" ,code)
+       my/portal-nrepl-connection))
+
+    (defun my/start-portal-instance ()
+      ; TODO check if portal was closed
+      (my/start-portal)
+      (my/eval-in-portal
+       "(require '[portal.api :as p])
+        (defonce portal (atom nil))
+        (when-not @portal
+          (reset! portal (p/open)))"))
+
+    (defun my/send-to-portal (data)
+      (my/start-portal-instance)
+      (my/eval-in-portal
+       (parseedn-print-str
+        `(reset! @portal (quote ,data)))))
+
     (defun my/org-babel-execute-src-block-to-clojure-portal ()
-           (interactive)
-           (let* ((result (org-babel-execute-src-block))
-                  (temp (make-temp-file "clojure-portal")))
-             (with-temp-file temp
-               (insert (parseedn-print-str result)))
-             (start-process-shell-command "clojure-portal" "clojure-portal-output" (format "cat %s | bb -cp `clojure -Spath -A:portal/cli` -m portal.main edn" temp))))
+      (interactive)
+      (let* ((result (org-babel-execute-src-block)))
+        (my/send-to-portal result)))
   #+end_src
 * Microk8s Org-babel
   #+begin_src emacs-lisp
