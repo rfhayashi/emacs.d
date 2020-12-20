@@ -367,18 +367,34 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
   - In current form closing the portal chrome window puts the system in an inconsistent state
     requiring an emacs restart.
   #+begin_src emacs-lisp
-    (setq my/portal-nrepl-connection nil)
+    (setq my/portal-nrepl-port 1900)
+
+    (defun my/portal-nrepl-port-open-p ()
+      (condition-case nil
+          (progn
+            (make-network-process :name "nrepl-portal" :family 'ipv4 :host "localhost" :service my/portal-nrepl-port)
+            (delete-process "nrepl-portal")
+            t)
+        (error nil)))
+
+    (defun my/wait-for-portal-nrepl-port ()
+      (let ((number-of-tries 0))
+        (while (not (my/portal-nrepl-port-open-p))
+          (message (number-to-string number-of-tries))
+          (when (> number-of-tries 10)
+            (error "timeout waiting for port"))
+          (setq number-of-tries (+ number-of-tries 1))
+          (sleep-for 0.2))))
 
     (defun my/start-portal ()
-      ; TODO check if connection is still open
-      (when (not my/portal-nrepl-connection)
+      (when (not (my/portal-nrepl-port-open-p))
         (setq my/portal-process
               (start-process-shell-command "clojure-portal"
                                            "clojure-portal-output"
-                                           "bb -cp `clojure -Spath -A:portal/cli` --nrepl-server"))
-        (sleep-for 1) ;; TODO parse portal-process buffer to detect nrepl server is up
+                                           (format "bb -cp `clojure -Spath -A:portal/cli` --nrepl-server localhost:%s" my/portal-nrepl-port)))
+        (my/wait-for-portal-nrepl-port)
         (setq my/portal-nrepl-connection
-              (cider-connect '(:host "localhost" :port 1667)))))
+              (cider-connect `(:host "localhost" :port ,my/portal-nrepl-port)))))
 
     (defun my/eval-in-portal (code)
       (nrepl-send-sync-request
