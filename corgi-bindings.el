@@ -187,7 +187,7 @@
                  :repl/jack-in-alt ("Jack in ClojureScript" cider-jack-in-clj)
                  :repl/jack-in-combined ("Jack in Clj+Cljs" cider-jack-in-clj&cljs)))
 
-  (org-mode (:eval/top-level-form org-babel-execute-src-block
+  (org-mode (:eval/top-level-form org-ctrl-c-ctrl-c
 	     :eval/buffer org-babel-execute-buffer
              :eval/to-portal my/org-babel-execute-src-block-to-clojure-portal
 	     :jump/definition org-open-at-point))
