@@ -50,7 +50,6 @@
  ("spinner" . "2daa167bec1c7566d662d48613a94453536b524a")
  ("straight.el" . "f6663b1de0fb5d9c64528e4f7f8bb914f49bb6d2")
  ("transient" . "e2fee1987902fb9963c85a62fa680082a878d460")
- ("undo-tree" . "7523823ca3709e0327f3e9f38ddfec71a58084be")
  ("use-package" . "caa92f1d64fc25480551757d854b4b49981dfa6b")
  ("with-editor" . "6735180e73e787b79535c245b162249b70dbf841")
  ("yaml-mode" . "fc5e1c58f94472944c4aa838f00f6adcac6fa992")
