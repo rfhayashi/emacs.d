@@ -363,12 +363,13 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
   Function that shows the result of executing a org babel source block in [[https://github.com/djblue/portal][Portal.]]
   
   Notes:
-  - In current form closing the portal chrome window puts the system in an inconsistent state
-    requiring manual cleanup or an emacs restart.
+  - It requires using this fork of portal: https://github.com/rfhayashi/portal/tree/session-open
   #+begin_src emacs-lisp
     (setq my/portal-nrepl-port 1900)
 
-    (defconst my/portal-classpath-command "clojure -Spath -Sdeps '{:deps {djblue/portal {:mvn/version \"0.7.0\"}}}'")
+    ;(defconst my/portal-classpath-command "clojure -Spath -Sdeps '{:deps {djblue/portal {:mvn/version \"0.7.0\"}}}'")
+    (defconst my/portal-classpath-command
+      "clojure -Spath -Sdeps '{:deps {djblue/portal {:local/root \"../portal\"}}}'")
 
     (defun my/portal-nrepl-port-open-p ()
       (condition-case nil
@@ -404,15 +405,11 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
        my/portal-nrepl-connection))
 
     (defun my/start-portal-instance ()
-      ; TODO check if portal was closed
-      ; We could make use of http://http-kit.github.io/http-kit/org.httpkit.server.html#var-on-close
-      ; to detect when the browser window was closed
       (my/start-portal)
       (my/eval-in-portal
        "(require '[portal.api :as p])
         (defonce portal (atom nil))
-        (when-not @portal
-          (reset! portal (p/open)))"))
+        (reset! portal (p/open @portal nil))"))
 
     (defun my/send-to-portal (data)
       (my/start-portal-instance)
