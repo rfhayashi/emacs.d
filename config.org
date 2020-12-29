@@ -87,6 +87,11 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
        (require 'winum)
        (winum-mode))
    #+end_src
+** Winner mode
+   Allows undo window configurations.
+   #+begin_src emacs-lisp
+     (winner-mode)
+   #+end_src
 * Evil setup
   Modal editing + Emacs rocks and is a little [[https://github.com/emacs-evil/evil][evil]]
   [[https://github.com/emacs-evil/evil-collection][Evil Collection]] spare us the time of setting up evil.

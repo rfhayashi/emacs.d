@@ -41,7 +41,8 @@
     ("/" "Split window right" split-window-right)
     ("-" "Split window below" split-window-below)
     ("o" "Go to other window" other-window)
-    ("d" "Delete window" delete-window))
+    ("d" "Delete window" delete-window)
+    ("u" "Undo window config" winner-undo))
 
    ("k" "Structural editing"
     ("s" "Slurp Forward" :sexp/slurp-forward)
