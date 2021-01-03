@@ -322,20 +322,21 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
 ** Support for deps.edn
    It supports setting deps.edn as a source block. To do that create a clojure source block like:
 
-   #+begin_comment
-   #+name: deps-edn
-   #+begin_src clojure
-   {:deps org.clojure/tools.reader {:mvn/version "1.1.1"}}
-   #+end_src
-   #+end_comment
+   #+begin_example
+     ,#+name: deps-edn
+     ,#+begin_src clojure
+     {:deps org.clojure/tools.reader {:mvn/version "1.1.1"}}
+     ,#+end_src
+   #+end_example
 
    And add a `:deps-edn` attribute to your clojure source block, e.g.:
-   #+begin_comment
-   #+begin_src clojure
-   #+begin_src clojure :deps-edn deps-edn
-   ; some clojure code
-   #+end_src
-   #+end_comment
+   #+begin_example
+     ,#+begin_src clojure
+     ,#+begin_src clojure :deps-edn deps-edn
+     ; some clojure code
+     ,#+end_src
+   #+end_example
+   
    To start the repl invoke ~my/ob-clojure-cider-jack-in~ from the source block you want to evaluate.
   
   #+begin_src emacs-lisp
