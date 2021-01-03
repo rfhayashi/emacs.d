@@ -307,63 +307,105 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       (push 'company-org-roam company-backends))
 
   #+end_src
+* Org Babel + Clojure
+  Customizations on top of ob-clojure.
+** Support for babashka
+   Makes it possible to use [[https://github.com/borkdude/babashka][babashka]] via [[https://orgmode.org/worg/org-contrib/babel/][org babel]].
 
-* Babashka
-  Makes it possible to use [[https://github.com/borkdude/babashka][babashka]] via [[https://orgmode.org/worg/org-contrib/babel/][org babel]].
+   To enable that you can either ~(setq org-babel-clojure-backend 'babashka)~, which will always use babashka when
+   using clojure as language, or you can add a header argument ~:backend babashka~, which will only apply to
+   a specific source block. Note that you need to have babashka installed in your system.
 
-  To enable that you can either ~(setq org-babel-clojure-backend 'babashka)~, which will always use babashka when
-  using clojure as language, or you can add a header argument ~:backend babashka~, which will only apply to
-  a specific source block. Note that you need to have babashka installed in your system.
+   This code was forked from https://git.jeremydormitzer.com/jdormit/dotfiles/commit/5f9dbe53cea2b37fc89cc49f858f98387da99576
+   with a few modifications.
+   
+** Support for deps.edn
+   It supports setting deps.edn as a source block. To do that create a clojure source block like:
 
-  This code was forked from https://git.jeremydormitzer.com/jdormit/dotfiles/commit/5f9dbe53cea2b37fc89cc49f858f98387da99576
-  with a few modifications.
-   #+begin_src emacs-lisp
-     (defun ob-clojure-eval-with-bb (expanded params)
-       "Evaluate EXPANDED code block with PARAMS using babashka."
-       (unless (executable-find "bb")
-	 (user-error "Babashka not installed"))
-       (let* ((stdin (let ((stdin (cdr (assq :stdin params))))
-		       (when stdin
-			 (elisp->clj
-			  (org-babel-ref-resolve stdin)))))
-	      (input (cdr (assq :input params)))
-	      (file (make-temp-file "ob-clojure-bb" nil nil expanded))
-	      (command (concat (when stdin (format "echo %s | " (shell-quote-argument stdin)))
-			       (format "bb %s -f %s"
-				       (cond
-					((equal input "edn") "")
-					((equal input "text") "-i")
-					(t ""))
-				       (shell-quote-argument file))))
-	      (result (shell-command-to-string command)))
-	 (string-trim result)))
-
-     (defun org-babel-execute:clojure (body params)
-       "Execute a block of Clojure code with Babel."
-       (let* ((backend (if-let ((backend-s (a-get params :backend)))
-			   (intern backend-s)
-			 org-babel-clojure-backend))
-	      (expanded (org-babel-expand-body:clojure body params))
-	      (result-params (cdr (assq :result-params params)))
-	      result)
-	 (unless backend
-	   (user-error "You need to customize org-babel-clojure-backend"))
-	 (setq result
-	       (cond
-		((eq backend 'inf-clojure)
-		 (ob-clojure-eval-with-inf-clojure expanded params))
-		((eq backend 'cider)
-		 (ob-clojure-eval-with-cider expanded params))
-		((eq backend 'slime)
-		 (ob-clojure-eval-with-slime expanded params))
-		((eq backend 'babashka)
-		 (ob-clojure-eval-with-bb expanded params))))
-	 (org-babel-result-cond result-params
-	   result
-	   (condition-case nil (org-babel-script-escape result)
-	     (error result)))))
+   #+begin_example clojure :tangle no
+   #+name: deps-edn
+   #+begin_src clojure
+   {:deps org.clojure/tools.reader {:mvn/version "1.1.1"}}
    #+end_src
+   #+end_example
 
+   And add a `:deps-edn` attribute to your clojure source block, e.g.:
+   #+begin_example
+   #+begin_src clojure
+   #+begin_src clojure :deps-edn deps-edn
+   ; some clojure code
+   #+end_src
+   #+end_example
+
+   To start the repl invoke ~my/ob-clojure-cider-jack-in~ from the source block you want to evaluate.
+  
+  #+begin_src emacs-lisp
+    (defun ob-clojure-eval-with-bb (expanded params)
+      "Evaluate EXPANDED code block with PARAMS using babashka."
+      (unless (executable-find "bb")
+        (user-error "Babashka not installed"))
+      (let* ((stdin (let ((stdin (cdr (assq :stdin params))))
+                      (when stdin
+                        (elisp->clj
+                         (org-babel-ref-resolve stdin)))))
+             (input (cdr (assq :input params)))
+             (file (make-temp-file "ob-clojure-bb" nil nil expanded))
+             (command (concat (when stdin (format "echo %s | " (shell-quote-argument stdin)))
+                              (format "bb %s -f %s"
+                                      (cond
+                                       ((equal input "edn") "")
+                                       ((equal input "text") "-i")
+                                       (t ""))
+                                      (shell-quote-argument file))))
+             (result (shell-command-to-string command)))
+        (string-trim result)))
+
+    (defun my/ob-clojure-deps-block-name ()
+      (seq-let [_ _ params] (org-babel-get-src-block-info)
+        (a-get params :deps-edn)))
+
+    (defun my/ob-clojure-deps-block-body ()
+      (when-let ((block-name (my/ob-clojure-deps-block-name)))
+        (save-excursion
+          (org-babel-goto-named-src-block block-name)
+          (seq-let [_ body] (org-babel-get-src-block-info)
+            body))))
+
+    (defun my/ob-clojure-cider-jack-in-clj ()
+      (interactive)
+      (when-let ((deps-edn (my/ob-clojure-deps-block-body)))
+        (write-region deps-edn nil (concat default-directory "deps.edn")))
+      (let ((cider-allow-jack-in-without-project t))
+        (cider-jack-in-clj '())))
+
+    (defun org-babel-execute:clojure (body params)
+      "Execute a block of Clojure code with Babel."
+      (let* ((backend (if-let ((backend-s (a-get params :backend)))
+                          (intern backend-s)
+                        org-babel-clojure-backend))
+             (expanded (org-babel-expand-body:clojure body params))
+             (result-params (cdr (assq :result-params params)))
+             result)
+        (unless backend
+          (user-error "You need to customize org-babel-clojure-backend"))
+        (setq result
+              (cond
+               ((eq backend 'inf-clojure)
+                (ob-clojure-eval-with-inf-clojure expanded params))
+               ((eq backend 'cider)
+                (progn
+                  (when (not (cider-current-repl))
+                    (error "no repl connected, run my/ob-clojure-cider-jack-in-clj"))
+                  (ob-clojure-eval-with-cider expanded params)))
+               ((eq backend 'slime)
+                (ob-clojure-eval-with-slime expanded params))
+               ((eq backend 'babashka)
+                (ob-clojure-eval-with-bb expanded params))))
+        (org-babel-result-cond result-params
+          result
+          (condition-case nil (org-babel-script-escape result)
+            (error result)))))
+  #+end_src
 * Org Mode + Clojure Portal
   Function that shows the result of executing a org babel source block in [[https://github.com/djblue/portal][Portal.]]
   

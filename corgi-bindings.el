@@ -191,7 +191,8 @@
   (org-mode (:eval/top-level-form org-ctrl-c-ctrl-c
 	     :eval/buffer org-babel-execute-buffer
              :eval/to-portal my/org-babel-execute-src-block-to-clojure-portal
-	     :jump/definition org-open-at-point))
+	     :jump/definition org-open-at-point
+             :repl/jack-in my/ob-clojure-cider-jack-in-clj))
 
   (cider-repl-mode ( :repl/toggle cider-switch-to-last-clojure-buffer
                      :repl/quit cider-quit
