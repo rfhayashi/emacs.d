@@ -329,7 +329,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
      ,#+end_src
    #+end_example
 
-   And add a `:deps-edn` attribute to your clojure source block, e.g.:
+   And add a ~:deps-edn~ attribute to your clojure source block, e.g.:
    #+begin_example
      ,#+begin_src clojure
      ,#+begin_src clojure :deps-edn deps-edn
