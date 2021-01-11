@@ -179,6 +179,13 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
 
     (use-package
       helm-ag)
+
+    (use-package
+      swiper-helm
+      :bind
+      (:map evil-normal-state-map
+            ("/" . swiper)))
+
   #+end_src
 * Magit
   Work with git with a little bit of [[https://magit.vc/][magit]]
