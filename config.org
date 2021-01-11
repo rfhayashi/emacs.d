@@ -92,6 +92,18 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
    #+begin_src emacs-lisp
      (winner-mode)
    #+end_src
+** Modeline
+   Using [[https://github.com/seagle0128/doom-modeline][Doom Modeline]]
+   #+begin_src emacs-lisp
+     (use-package doom-modeline
+       :custom
+       (doom-modeline-height 25)
+       :config
+       (set-face-attribute 'mode-line nil :family "Source Code Pro" :height 100)
+       (set-face-attribute 'mode-line-inactive nil :family "Source Code Prod" :height 100)
+       :init
+       (doom-modeline-mode 1))
+   #+end_src
 * Evil setup
   Modal editing + Emacs rocks and is a little [[https://github.com/emacs-evil/evil][evil]]
   [[https://github.com/emacs-evil/evil-collection][Evil Collection]] spare us the time of setting up evil.
