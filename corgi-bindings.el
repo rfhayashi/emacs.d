@@ -18,9 +18,9 @@
     ("s" "Search in buffer" swiper))
 
    ("p" "Project"
-    ("f" "Find file" counsel-projectile-find-file)
-    ("p" "Switch project" counsel-projectile-switch-project)
-    ("b" "Switch to buffer" counsel-projectile-switch-to-buffer)
+    ("f" "Find file" projectile-find-file)
+    ("p" "Switch project" projectile-switch-project)
+    ("b" "Switch to buffer" projectile-switch-to-buffer)
     ("'" "Start a shell" projectile-run-shell))
 
    ("g" "Git"
@@ -70,7 +70,7 @@
    ("9" "Select window 9" winum-select-window-9)
    ("0" "Select window 10" winum-select-window-10)
    ("'" "Shell" shell)
-   ("/" "Find in Project" counsel-projectile-ag))
+   ("/" "Find in Project" projectile-ag))
 
   ("," "Project specific leader key"
 

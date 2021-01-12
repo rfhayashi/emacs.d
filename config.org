@@ -213,7 +213,9 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
      (when (file-directory-p "~/dev")
        (setq projectile-project-search-path '("~/dev"))))
 
-    (use-package counsel-projectile)
+    (use-package counsel-projectile
+      :config
+      (counsel-projectile-mode))
   #+end_src
 * Yasnippet
   #+begin_src emacs-lisp
