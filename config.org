@@ -171,7 +171,9 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
   [[https://github.com/abo-abo/swiper][Ivy]] provides a completion mechanism to find files, projects and other things.
   #+begin_src emacs-lisp
     (use-package counsel
-      :custom (ivy-initial-inputs-alist nil)
+      :custom
+      (ivy-initial-inputs-alist nil)
+      (ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
       :config
       (counsel-mode 1)
       :bind (:map ivy-minibuffer-map
