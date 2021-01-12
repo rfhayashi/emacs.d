@@ -1,7 +1,7 @@
 (:bindings
  (("SPC" "Global leader key"
    ("b" "Buffer commands"
-    ("b" "Switch buffer" switch-to-buffer)
+    ("b" "Switch buffer" counsel-switch-buffer)
     ("d" "Kill buffer" kill-this-buffer)
     ("l" "List buffers" list-buffers)
     ("r" "Rename buffer" rename-buffer)
@@ -18,9 +18,9 @@
     ("s" "Search in buffer" swiper))
 
    ("p" "Project"
-    ("f" "Find file" projectile-find-file)
-    ("p" "Switch project" projectile-switch-project)
-    ("b" "Switch to buffer" projectile-switch-to-buffer)
+    ("f" "Find file" counsel-projectile-find-file)
+    ("p" "Switch project" counsel-projectile-switch-project)
+    ("b" "Switch to buffer" counsel-projectile-switch-to-buffer)
     ("'" "Start a shell" projectile-run-shell))
 
    ("g" "Git"

@@ -171,16 +171,25 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
   [[https://github.com/abo-abo/swiper][Ivy]] provides a completion mechanism to find files, projects and other things.
   #+begin_src emacs-lisp
     (use-package counsel
+      :custom (ivy-initial-inputs-alist nil)
       :config
-      (ivy-mode 1)
+      (counsel-mode 1)
       :bind (:map ivy-minibuffer-map
-                  ("C-j" . ivy-next-line)
-                  ("C-k" . ivy-previous-line)))
+             ("C-j" . ivy-next-line)
+             ("C-k" . ivy-previous-line)
+             :map ivy-switch-buffer-map
+             ("C-k" . ivy-previous-line)
+             :map ivy-reverse-i-search-map
+             ("C-k" . ivy-previous-line)))
 
     (use-package swiper
       :bind
       (:map evil-normal-state-map
             ("/" . swiper)))
+
+    (use-package ivy-rich
+      :init
+      (ivy-rich-mode 1))
   #+end_src
 * Magit
   Work with git with a little bit of [[https://magit.vc/][magit]]
