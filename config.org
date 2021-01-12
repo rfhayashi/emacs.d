@@ -202,7 +202,10 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
     (use-package
      projectile
      :config
-     (projectile-mode +1))
+     (projectile-mode +1)
+     :init
+     (when (file-directory-p "~/dev")
+       (setq projectile-project-search-path '("~/dev"))))
 
     (use-package
      helm-projectile)
