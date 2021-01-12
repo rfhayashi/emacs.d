@@ -27,6 +27,7 @@
  ("goto-chg" . "2af612153bc9f5bed135d25abe62f46ddaa9027f")
  ("ht.el" . "2850301d19176b8d3bb6cc8d95af6ab7e529bd56")
  ("hydra" . "2d553787aca1aceb3e6927e426200e9bb9f056f1")
+ ("ivy-rich" . "f8a1f5c90d2a113b597ef5903634c089fce3365b")
  ("json-mode" . "0e819e519ae17a2686e0881c4ca51fa873fa9b83")
  ("json-reformat" . "8eb6668ed447988aea06467ba8f42e1f2178246f")
  ("json-snatcher" . "b28d1c0670636da6db508d03872d96ffddbc10f2")
