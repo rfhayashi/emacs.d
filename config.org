@@ -166,26 +166,20 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       :config
       (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode))
   #+end_src
-* Helm
-  [[https://emacs-helm.github.io/helm/][Helm]] offers a completion mechanism to find files, projects and other things.
-  TAB key is redefined such as it behaves like it traditionally does in regular Emacs.
+* Ivy
+  [[https://github.com/abo-abo/swiper][Ivy]] provides a completion mechanism to find files, projects and other things.
   #+begin_src emacs-lisp
-    (use-package
-      helm
+    (use-package counsel
       :config
-      (define-key helm-map (kbd "TAB") #'helm-execute-persistent-action)
-      (define-key helm-map (kbd "<tab>") #'helm-execute-persistent-action)
-      (define-key helm-map (kbd "C-z") #'helm-select-action))
+      (ivy-mode 1)
+      :bind (:map ivy-minibuffer-map
+                  ("C-j" . ivy-next-line)
+                  ("C-k" . ivy-previous-line)))
 
-    (use-package
-      helm-ag)
-
-    (use-package
-      swiper-helm
+    (use-package swiper
       :bind
       (:map evil-normal-state-map
             ("/" . swiper)))
-
   #+end_src
 * Magit
   Work with git with a little bit of [[https://magit.vc/][magit]]
@@ -207,8 +201,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
      (when (file-directory-p "~/dev")
        (setq projectile-project-search-path '("~/dev"))))
 
-    (use-package
-     helm-projectile)
+    (use-package counsel-projectile)
   #+end_src
 * Yasnippet
   #+begin_src emacs-lisp

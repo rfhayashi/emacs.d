@@ -1,7 +1,7 @@
 (:bindings
  (("SPC" "Global leader key"
    ("b" "Buffer commands"
-    ("b" "Switch buffer" helm-buffers-list)
+    ("b" "Switch buffer" switch-to-buffer)
     ("d" "Kill buffer" kill-this-buffer)
     ("l" "List buffers" list-buffers)
     ("r" "Rename buffer" rename-buffer)
@@ -9,19 +9,18 @@
     ("w" "Toggle read-only" read-only-mode))
 
    ("f" "File commands"
-    ("f" "Find file" helm-find-files)
+    ("f" "Find file" find-file)
     ("s" "Save file" save-buffer)
     ("S" "Save all" evil-write-all)
     ("A" "Find alternate file" find-alternate-file))
 
    ("s" "Search commands"
-    ("s" "Search in buffer" swiper)
-    ("p" "Grep in project" counsel-git-grep))
+    ("s" "Search in buffer" swiper))
 
    ("p" "Project"
-    ("f" "Find file" helm-projectile-find-file)
-    ("p" "Switch project" helm-projectile-switch-project)
-    ("b" "Switch to buffer" helm-projectile-switch-to-buffer)
+    ("f" "Find file" projectile-find-file)
+    ("p" "Switch project" projectile-switch-project)
+    ("b" "Switch to buffer" projectile-switch-to-buffer)
     ("'" "Start a shell" projectile-run-shell))
 
    ("g" "Git"
@@ -58,7 +57,7 @@
    ("t" "Toggle modes"
     ("l" "Toggle line numbers" linum-mode))
 
-   ("SPC" "Execute command (M-x)" helm-M-x)
+   ("SPC" "Execute command (M-x)" execute-extended-command)
    ("u" "Universal prefix" universal-argument)
    ("1" "Select window 1" winum-select-window-1)
    ("2" "Select window 2" winum-select-window-2)
@@ -71,7 +70,7 @@
    ("9" "Select window 9" winum-select-window-9)
    ("0" "Select window 10" winum-select-window-10)
    ("'" "Shell" shell)
-   ("/" "Find in Project" helm-projectile-ag))
+   ("/" "Find in Project" counsel-projectile-ag))
 
   ("," "Project specific leader key"
 
