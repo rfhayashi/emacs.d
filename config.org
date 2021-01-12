@@ -94,6 +94,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
    #+end_src
 ** Modeline
    Using [[https://github.com/seagle0128/doom-modeline][Doom Modeline]]
+   The first time this is loaded in a computer, run ~all-the-icons-install-fonts~ to install the proper fonts.
    #+begin_src emacs-lisp
      (use-package doom-modeline
        :custom
