@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: bb-src
-# key: bbsrc
-# --
-#+begin_src clojure :backend babashka
-$0
-#+end_src
