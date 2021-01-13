@@ -298,6 +298,25 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       :injections {:extra-deps {my/tap {:local/root "<<homedir()>>/.clojure/injections"}}}}}
   #+end_src
 
+  #+begin_src clojure :tangle ~/.clojure/injections/project.clj
+    (defproject my/tap "0.0.1-SNAPSHOT")
+  #+end_src
+
+  To use tap with leiningen, execute this block manually.
+  #+begin_src bash :tangle no :noweb yes
+    cd <<homedir()>>/.clojure/injections
+    lein install
+  #+end_src
+
+  #+begin_src clojure :tangle ~/.lein/profiles.clj
+    {:user
+     {:dependencies        [[my/tap "0.0.1-SNAPSHOT"]
+                            [djblue/portal "0.7.0"]]
+      :injections          [(require 'tap)
+                            (require '[portal.api :as portal])
+                            (portal/tap)]}}
+  #+end_src
+
   #+begin_src emacs-lisp
     (defun my/cider-test-run-focused-test ()
       "Run test around point"
