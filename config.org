@@ -238,6 +238,24 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
     {}
   #+end_src
 
+  #+begin_src clojure :tangle ~/.clojure/injections/src/portal.clj
+    (ns portal
+      (:require [portal.api :as portal]))
+
+    (defonce portal* (atom nil))
+
+    (defn instance []
+      (reset! portal* (portal/open @portal*))
+      @portal*)
+
+    (defn send [v]
+      (reset! (instance) v))
+
+    (defn fetch []
+      @(instance))
+
+  #+end_src
+
   #+begin_src clojure :tangle ~/.clojure/injections/src/tap.clj
     (ns tap
       (:refer-clojure :exclude [>]))
@@ -273,9 +291,9 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
   #+begin_src clojure :tangle ~/.clojure/injections/src/user.clj
     (ns user
       (:require [tap]
-                [portal.api :as portal]))
+                [portal]))
 
-    (portal/tap)
+    (portal.api/tap)
   #+end_src
 
   #+begin_src clojure :tangle ~/.clojure/deps.edn :noweb yes
@@ -290,11 +308,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
                  :main-opts ["-m" "depot.outdated.main"]}
 
       :oz {:extra-deps {metasoarous/oz {:mvn/version "1.6.0-alpha6"}}}
-      :portal {:extra-deps {djblue/portal {:mvn/version "0.7.0"}}}
-      :portal/cli {:main-opts ["-m" "portal.main"]
-                   :extra-deps {djblue/portal {:mvn/version "0.7.0"}
-                                cheshire/cheshire {:mvn/version "5.10.0"}
-                                clj-commons/clj-yaml {:mvn/version "0.7.0"}}}
+      :portal {:extra-deps {djblue/portal {:mvn/version "0.8.0"}}}
       :injections {:extra-deps {my/tap {:local/root "<<homedir()>>/.clojure/injections"}}}}}
   #+end_src
 
@@ -311,9 +325,9 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
   #+begin_src clojure :tangle ~/.lein/profiles.clj
     {:user
      {:dependencies        [[my/tap "0.0.1-SNAPSHOT"]
-                            [djblue/portal "0.7.0"]]
+                            [djblue/portal "0.8.0"]]
       :injections          [(require 'tap)
-                            (require '[portal.api :as portal])
+                            (require 'portal)
                             (portal/tap)]}}
   #+end_src
 
@@ -329,6 +343,11 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       (interactive)
       (cider-load-buffer)
       (cider-test-run-ns-tests nil))
+
+    (defun my/portal-cider-inspect-last-result ()
+      (interactive)
+      (let ((repl (cider-current-repl)))
+        (nrepl-send-sync-request `("op" "eval" "code" "(portal/send *1)") repl)))
 
     (use-package clojure-mode
       :config
