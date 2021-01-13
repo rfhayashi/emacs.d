@@ -13,6 +13,12 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
                  (straight-p . t))))
 #+end_src
 
+* Home directory
+  Sets the home dir to a name so it can be injected later on.
+  #+name: homedir
+  #+begin_src emacs-lisp :tangle no :results value
+    (getenv "HOME")
+  #+end_src
 * Hide menu/toolbar/scroolbar
   We don't want to use the mouse anyway :P
   We also want to use as much screen as possible
@@ -227,7 +233,29 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
   #+end_src
 * Clojure
   Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
-  #+begin_src clojure :tangle ~/.clojure/deps.edn
+
+  #+begin_src clojure :tangle ~/.clojure/injections/deps.edn
+    {}
+  #+end_src
+
+  #+begin_src clojure :tangle ~/.clojure/injections/src/tap.clj
+    (ns tap
+      (:refer-clojure :exclude [>]))
+
+    (defn > [v]
+      (tap> v)
+      v)
+  #+end_src
+
+  #+begin_src clojure :tangle ~/.clojure/injections/src/user.clj
+    (ns user
+      (:require [tap]
+                [portal.api :as portal]))
+
+    (portal/tap)
+  #+end_src
+
+  #+begin_src clojure :tangle ~/.clojure/deps.edn :noweb yes
     {:aliases
 
      {; Linters
@@ -243,7 +271,8 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       :portal/cli {:main-opts ["-m" "portal.main"]
                    :extra-deps {djblue/portal {:mvn/version "0.7.0"}
                                 cheshire/cheshire {:mvn/version "5.10.0"}
-                                clj-commons/clj-yaml {:mvn/version "0.7.0"}}}}}
+                                clj-commons/clj-yaml {:mvn/version "0.7.0"}}}
+      :injections {:extra-deps {my/tap {:local/root "<<homedir()>>/.clojure/injections"}}}}}
   #+end_src
 
   #+begin_src emacs-lisp
@@ -285,7 +314,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       (setq cider-test-defining-forms '("deftest" "defspec" "defflow"))
       (setq org-babel-clojure-backend 'cider)
       (setq clojure-toplevel-inside-comment-form t)
-      (setq cider-clojure-cli-global-options "-A:portal")
+      (setq cider-clojure-cli-global-options "-A:portal -A:injections")
       (my/setup-matcher-combinators))
 
     (use-package lsp-mode
