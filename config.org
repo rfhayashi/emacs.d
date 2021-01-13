@@ -336,6 +336,13 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       :config
       (push 'company-org-roam company-backends))
 
+    (defun my/org-mode-visual-fill ()
+      (setq visual-fill-column-width 80)
+      (visual-fill-column-mode 1)
+      (visual-line-mode 1))
+
+    (use-package visual-fill-column
+      :hook (org-mode . my/org-mode-visual-fill))
   #+end_src
 * Org Babel + Clojure
   Customizations on top of ob-clojure.
