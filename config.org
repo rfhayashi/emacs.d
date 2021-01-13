@@ -408,7 +408,6 @@
     (with-eval-after-load 'org
       (require 'ob-shell)
       (require 'ob-clojure)
-      (setq org-confirm-babel-evaluate nil)
       (setq org-ellipsis " ▾")
       (org-babel-lob-ingest (expand-file-name "babel.org" user-emacs-directory))
       (require 'org-tempo)

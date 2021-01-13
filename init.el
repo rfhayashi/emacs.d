@@ -1,5 +1,8 @@
 (straight-use-package 'org)
 
+; we need to set this before tangling config.org since it evals code
+(setq org-confirm-babel-evaluate nil)
+
 (require 'org)
 (org-babel-tangle-file (expand-file-name "config.org" user-emacs-directory))
 
