@@ -1,6 +1,6 @@
 #+title: Emacs Config
 #+author: Rui Hayashi
-#+PROPERTY: header-args :results silent
+#+PROPERTY: header-args :results silent :tangle config.el
 
 * Introduction
 This is my emacs configuration.
