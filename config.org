@@ -245,6 +245,9 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
     (defn > [v]
       (tap> v)
       v)
+
+    (defn >-reader [form]
+      `(> ~form))
   #+end_src
 
   #+begin_src clojure :tangle ~/.clojure/injections/src/user.clj
@@ -253,6 +256,10 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
                 [portal.api :as portal]))
 
     (portal/tap)
+  #+end_src
+
+  #+begin_src clojure :tangle ~/.clojure/injections/src/data_readers.clj
+    {tap tap/>-reader}
   #+end_src
 
   #+begin_src clojure :tangle ~/.clojure/deps.edn :noweb yes
