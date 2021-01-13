@@ -54,6 +54,7 @@
  ("swiper" . "8f2abd397dba7205806cfa1615624adc8cd5145f")
  ("transient" . "e2fee1987902fb9963c85a62fa680082a878d460")
  ("use-package" . "caa92f1d64fc25480551757d854b4b49981dfa6b")
+ ("visual-fill-column" . "5b08b9ae9da5b95e42e94e4c9ec01d63e8848ea2")
  ("with-editor" . "6735180e73e787b79535c245b162249b70dbf841")
  ("yaml-mode" . "fc5e1c58f94472944c4aa838f00f6adcac6fa992")
  ("yasnippet" . "5cbdbf0d2015540c59ed8ee0fcf4788effdf75b6")
