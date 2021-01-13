@@ -562,14 +562,11 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
 * Org Mode + Clojure Portal
   Function that shows the result of executing a org babel source block in [[https://github.com/djblue/portal][Portal.]]
   
-  Notes:
-  - It requires using this fork of portal: https://github.com/rfhayashi/portal/tree/session-open
   #+begin_src emacs-lisp
     (setq my/portal-nrepl-port 1900)
 
-    ;(defconst my/portal-classpath-command "clojure -Spath -Sdeps '{:deps {djblue/portal {:mvn/version \"0.7.0\"}}}'")
     (defconst my/portal-classpath-command
-      "clojure -Spath -Sdeps '{:deps {djblue/portal {:local/root \"../portal\"}}}'")
+      "clojure -Spath -Sdeps '{:deps {djblue/portal {:mvn/version \"0.8.0\"}}}'")
 
     (defun my/portal-nrepl-port-open-p ()
       (condition-case nil
