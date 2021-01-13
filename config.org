@@ -2,17 +2,6 @@
 #+author: Rui Hayashi
 #+PROPERTY: header-args :results silent :tangle config.el :mkdirp yes
 
-* Introduction
-This is my emacs configuration.
-This configuration is meant to be used with [[https://github.com/plexus/chemacs][chemacs]].
-Since it is also based on [[https://github.com/raxod502/straight.el][Straight]], chemacs profile should activate it. E.g.
-
-#+begin_src emacs-lisp :tangle no
-  ; ~/.emacs-profiles.el example
-  (("default" . ((user-emacs-directory . "<this repo dir>")
-                 (straight-p . t))))
-#+end_src
-
 * Home directory
   Sets the home dir to a name so it can be injected later on.
   #+name: homedir
