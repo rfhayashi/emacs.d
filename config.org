@@ -242,12 +242,32 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
     (ns tap
       (:refer-clojure :exclude [>]))
 
-    (defn > [v]
-      (tap> v)
+    (defn m [message v]
+      (tap> {:message message
+             :tap v})
       v)
 
     (defn >-reader [form]
-      `(> ~form))
+      `(let [t# ~form]
+         (tap> t#)
+         t#))
+
+    (defmacro > [form]
+      (>-reader form))
+
+    (defn d-reader [form]
+      `(let [t# ~form]
+         (tap> {:code (pr-str (quote ~form))
+                :tap t#})
+         t#))
+
+    (defmacro d [form]
+      (d-reader form))
+  #+end_src
+
+  #+begin_src clojure :tangle ~/.clojure/injections/src/data_readers.clj
+    {tap tap/>-reader
+     tapd tap/d-reader}
   #+end_src
 
   #+begin_src clojure :tangle ~/.clojure/injections/src/user.clj
@@ -256,10 +276,6 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
                 [portal.api :as portal]))
 
     (portal/tap)
-  #+end_src
-
-  #+begin_src clojure :tangle ~/.clojure/injections/src/data_readers.clj
-    {tap tap/>-reader}
   #+end_src
 
   #+begin_src clojure :tangle ~/.clojure/deps.edn :noweb yes
