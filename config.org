@@ -337,7 +337,8 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       (push 'company-org-roam company-backends))
 
     (defun my/org-mode-visual-fill ()
-      (setq visual-fill-column-width 80)
+      (setq visual-fill-column-width 80
+            visual-fill-column-center-text t)
       (visual-fill-column-mode 1)
       (visual-line-mode 1))
 
