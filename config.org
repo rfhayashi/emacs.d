@@ -311,6 +311,7 @@ Since it is also based on [[https://github.com/raxod502/straight.el][Straight]],
       (require 'ob-shell)
       (require 'ob-clojure)
       (setq org-confirm-babel-evaluate nil)
+      (setq org-ellipsis " ▾")
       (org-babel-lob-ingest (expand-file-name "babel.org" user-emacs-directory)))
 
     (use-package evil-org
