@@ -145,7 +145,10 @@
     (use-package
       company
       :config
-      (global-company-mode))
+      (global-company-mode)
+      :custom
+      (company-minimum-prefix-length 1)
+      (company-idle-delay 0.0))
   #+end_src
 * Structural Editing
   Because parenthesis matter, and [[https://www.emacswiki.org/emacs/ParEdit][paredit]] takes control of them.
