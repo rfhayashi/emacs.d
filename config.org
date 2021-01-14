@@ -217,14 +217,37 @@
       :init
       (ivy-rich-mode 1))
   #+end_src
-* Magit
-  Work with git with a little bit of [[https://magit.vc/][magit]]
-  #+begin_src emacs-lisp
-    (use-package
-      magit)
+* Git
+** Config
+   #+begin_src conf-unix :tangle ~/.config/git/config
+     [commit]
+     gpgSign=true
 
-    (use-package
-      evil-magit)
+     [core]
+     editor=vim
+
+     [push]
+     default=current
+
+     [user]
+     email=rfhayashi@gmail.com
+     name=Rui Fernando Hayashi
+     signingKey=rfhayashi@gmail.com
+
+     [github]
+     user=rfhayashi
+   #+end_src
+   #+begin_src conf-unix :tangle ~/.config/git/ignore
+     .lsp
+     .nrepl-port
+     .cpcache
+   #+end_src
+** Magit
+   Work with git with a little bit of [[https://magit.vc/][magit]]
+   #+begin_src emacs-lisp
+     (use-package magit)
+
+     (use-package evil-magit)
   #+end_src
 * Projectile
   Sets up [[https://github.com/bbatsov/projectile][Projectile]].
