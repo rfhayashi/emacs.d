@@ -138,7 +138,31 @@
 	     (delq corkey-mode minor-mode-map-alist))))
 
   #+end_src
-
+* File Management
+** Dired
+   Better listing switches and enable h/l keybindings to navigate dirs up and down.
+   #+begin_src emacs-lisp
+     (use-package dired
+       :straight nil
+       :custom ((dired-listing-switches "-agho --group-directories-first"))
+       :config
+       (evil-collection-define-key 'normal 'dired-mode-map
+         "h" 'dired-up-directory
+         "l" 'dired-find-file))
+   #+end_src
+   Hide dotfiles.
+   #+begin_src emacs-lisp
+     (use-package dired-hide-dotfiles
+       :hook (dired-mode . dired-hide-dotfiles-mode)
+       :config
+       (evil-collection-define-key 'normal 'dired-mode-map
+         "H" 'dired-hide-dotfiles-mode))
+   #+end_src
+   Add colors.
+   #+begin_src emacs-lisp
+     (use-package diredfl
+       :hook (dired-mode . diredfl-mode))
+   #+end_src
 * Auto Completion
   [[https://github.com/company-mode/company-mode][Company]] to the rescue
   #+begin_src emacs-lisp

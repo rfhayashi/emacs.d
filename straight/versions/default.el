@@ -9,6 +9,8 @@
  ("corgi-packages" . "37bd7b1ff2c904e485a35ccd4132c78ed6c21d7e")
  ("counsel-projectile" . "06b03c1080d3ccc3fa9b9c41b1ccbcf13f058e4b")
  ("dash.el" . "0f238a9a466879ee96e5db0482019453718f342d")
+ ("dired-hide-dotfiles" . "b715f643ec805b3b8aca334595e6589320f04a49")
+ ("diredfl" . "cd052dfef602fe79d8dfbcf9f06e6da74412218b")
  ("doom-modeline" . "4956606a5455a3968ca10cbdb8de3889e6bd1d85")
  ("emacs-async" . "14f48de586b0977e3470f053b810d77b07ea427a")
  ("emacs-memoize" . "51b075935ca7070f62fae1d69fe0ff7d8fa56fdd")
