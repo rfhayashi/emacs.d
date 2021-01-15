@@ -274,10 +274,10 @@
   Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
 
   #+begin_src emacs-lisp
-    (switch-to-buffer "guix-install-openjdk")
+    (switch-to-buffer "nix-install-clojure-lsp")
     (goto-char (point-max))
-    (call-process-shell-command "guix install openjdk" nil "guix-install-openjdk" t)
-    (kill-buffer "guix-install-openjdk")
+    (call-process-shell-command "nix-env -i clojure-lsp" nil "nix-install-clojure-lsp" t)
+    (kill-buffer "nix-install-clojure-lsp")
   #+end_src
   
   #+begin_src clojure :tangle ~/.clojure/injections/deps.edn
