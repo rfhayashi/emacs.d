@@ -241,6 +241,7 @@
      .lsp
      .nrepl-port
      .cpcache
+     .clj-kondo
    #+end_src
 ** Magit
    Work with git with a little bit of [[https://magit.vc/][magit]]
@@ -377,7 +378,7 @@
                             [djblue/portal "0.8.0"]]
       :injections          [(require 'tap)
                             (require 'portal)
-                            (portal/tap)]}}
+                            (portal.api/tap)]}}
   #+end_src
 
   #+begin_src emacs-lisp
@@ -409,7 +410,7 @@
                (cmd (prin1-to-string (plist-get params :jack-in-cmd)))
                (project-type (cider-project-type (plist-get params :project-dir)))
                (packages (my/clojure-project-nix-packages project-type)))
-          (plist-put params :jack-in-cmd (format "nix-shell --pure --packages %s --command %s" packages cmd)))))
+          (plist-put params :jack-in-cmd (format "nix-shell --packages %s --command %s" packages cmd)))))
 
     (use-package clojure-mode
       :config
