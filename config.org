@@ -318,6 +318,7 @@
      .lsp
      .nrepl-port
      .cpcache
+     .clj-kondo
    #+end_src
 ** Magit
    Work with git with a little bit of [[https://magit.vc/][magit]]
@@ -350,6 +351,16 @@
 * Clojure
   Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
 
+  #+begin_src emacs-lisp
+    (when (not (executable-find "clojure-lsp"))
+      (switch-to-buffer "nix-install-clojure-lsp")
+      (goto-char (point-max))
+      ; TODO for some reason it takes a long time until the buffer shows up showing the
+      ; log of the command, it makes it feel like nothing is happening
+      (call-process-shell-command "nix-env -i clojure-lsp" nil "nix-install-clojure-lsp" t)
+      (kill-buffer "nix-install-clojure-lsp"))
+  #+end_src
+  
   #+begin_src clojure :tangle ~/.clojure/injections/deps.edn
     {}
   #+end_src
@@ -444,7 +455,7 @@
                             [djblue/portal "0.8.0"]]
       :injections          [(require 'tap)
                             (require 'portal)
-                            (portal/tap)]}}
+                            (portal.api/tap)]}}
   #+end_src
 
   #+begin_src emacs-lisp
@@ -464,6 +475,19 @@
       (interactive)
       (let ((repl (cider-current-repl)))
         (nrepl-send-sync-request `("op" "eval" "code" "(portal/send *1)") repl)))
+
+    (defun my/clojure-project-nix-packages (project-type)
+      (pcase project-type
+        ('clojure-cli "clojure")
+        ('lein "leiningen")))
+
+    (defun my/cider--update-jack-in-cmd (orig-fun &rest args)
+      (cl-letf (((symbol-function 'cider-jack-in-resolve-command) (lambda (project-type)(cider-jack-in-command project-type))))
+        (let* ((params (apply orig-fun args))
+               (cmd (prin1-to-string (plist-get params :jack-in-cmd)))
+               (project-type (cider-project-type (plist-get params :project-dir)))
+               (packages (my/clojure-project-nix-packages project-type)))
+          (plist-put params :jack-in-cmd (format "nix-shell --packages %s --command %s" packages cmd)))))
 
     (use-package clojure-mode
       :config
@@ -492,7 +516,8 @@
       (setq org-babel-clojure-backend 'cider)
       (setq clojure-toplevel-inside-comment-form t)
       (setq cider-clojure-cli-global-options "-A:portal -A:injections")
-      (my/setup-matcher-combinators))
+      (my/setup-matcher-combinators)
+      (advice-add 'cider--update-jack-in-cmd :around #'my/cider--update-jack-in-cmd))
 
     (use-package lsp-mode
       :config

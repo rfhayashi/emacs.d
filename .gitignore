@@ -15,4 +15,5 @@ bookmarks
 url/
 config.el
 org-roam.db
+.cache
 exwm
