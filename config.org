@@ -672,7 +672,7 @@
       (my/eval-in-portal
        "(require '[portal.api :as p])
         (defonce portal (atom nil))
-        (reset! portal (p/open @portal nil))"))
+        (reset! portal (p/open @portal))"))
 
     (defun my/send-to-portal (data)
       (my/start-portal-instance)
