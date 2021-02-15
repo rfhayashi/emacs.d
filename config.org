@@ -124,18 +124,14 @@
   #+begin_src emacs-lisp
     (use-package corkey
       :straight (corkey
-		 :type git
-		 :host github
-		 :branch "main"
-		 :files ("corkey/corkey.el")
-		 :repo "lambdaisland/corgi-packages")
+                 :type git
+                 :host github
+                 :branch "main"
+                 :files ("corkey/corkey.el")
+                 :repo "lambdaisland/corgi-packages")
       :config
-      (global-corkey-mode 1)
-      ;; Move to the front so these keys always have priority
-      (setq minor-mode-map-alist
-	    (cons
-	     (cons 'corkey-mode corkey/keymap)
-	     (delq corkey-mode minor-mode-map-alist))))
+      (corkey-mode 1)
+      (corkey/install-bindings))
 
   #+end_src
 * File Management
