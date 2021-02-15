@@ -628,6 +628,7 @@
 * Org Mode + Clojure Portal
   Function that shows the result of executing a org babel source block in [[https://github.com/djblue/portal][Portal.]]
   
+  Note: when using ~:results value~, org-babel will convert data to its table format and this command will convert back to edn which might change the original data structures. To get the exact result, use ~:results output~, which will send the result as a string to portal. Then you can ask portal to read it as edn.
   #+begin_src emacs-lisp
     (setq my/portal-nrepl-port 1900)
 
