@@ -399,6 +399,11 @@
       (let ((repl (cider-current-repl)))
         (nrepl-send-sync-request `("op" "eval" "code" "(portal/send *1)") repl)))
 
+    (defun my/portal-cider-open ()
+      (interactive)
+      (let ((repl (cider-current-repl)))
+        (nrepl-send-sync-request `("op" "eval" "code" "(portal/instance)") repl)))
+
     (defun my/clojure-project-nix-packages (project-type)
       (pcase project-type
         ('clojure-cli "clojure")
