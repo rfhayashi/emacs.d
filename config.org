@@ -674,11 +674,16 @@
         (defonce portal (atom nil))
         (reset! portal (p/open @portal))"))
 
+    (defun my/parseedn-print-str (data)
+      ; deactivates alist conversion in parseedn, since sometimes it might produce
+      ; a map with repeated keys, e.g: (parseedn-print-str '(("a" 1)("a" 2))) => "{\"a\" (1), \"a\" (1)}"
+      (cl-letf (((symbol-function 'parseedn-alist-p) (lambda (x) nil)))
+        (parseedn-print-str data)))
+
     (defun my/send-to-portal (data)
       (my/start-portal-instance)
       (my/eval-in-portal
-       (parseedn-print-str
-        `(reset! @portal (quote ,data)))))
+       (format "(reset! @portal '%s)" (my/parseedn-print-str data))))
 
     (defun my/org-babel-execute-src-block-to-clojure-portal ()
       (interactive)
