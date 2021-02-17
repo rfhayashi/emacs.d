@@ -779,3 +779,11 @@
 
     (add-to-list 'org-babel-load-languages '(kubectl .t))
   #+end_src
+
+* Sensitive config
+  Load config/secrets that are sensitive and cannot be published in this repository.
+  #+begin_src emacs-lisp
+    (when (file-exists-p "~/.config/emacs/local.org")
+      (org-babel-tangle-file "~/.config/emacs/local.org")
+      (load-file "~/.config/emacs/local.el"))
+  #+end_src
