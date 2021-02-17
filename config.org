@@ -559,6 +559,9 @@
    To start the repl invoke ~my/ob-clojure-cider-jack-in~ from the source block you want to evaluate.
   
   #+begin_src emacs-lisp
+    (defun my/ob-nix-shell-bb-command (bb-command)
+      (format "nix-shell --packages babashka --command \"%s\"" bb-command))
+
     (defun ob-clojure-eval-with-bb (expanded params)
       "Evaluate EXPANDED code block with PARAMS using babashka."
       (unless (executable-find "bb")
@@ -570,12 +573,13 @@
              (input (cdr (assq :input params)))
              (file (make-temp-file "ob-clojure-bb" nil nil expanded))
              (command (concat (when stdin (format "echo %s | " (shell-quote-argument stdin)))
-                              (format "bb %s -f %s"
-                                      (cond
-                                       ((equal input "edn") "")
-                                       ((equal input "text") "-i")
-                                       (t ""))
-                                      (shell-quote-argument file))))
+                              (my/ob-nix-shell-bb-command
+                               (format "bb %s -f %s"
+                                       (cond
+                                        ((equal input "edn") "")
+                                        ((equal input "text") "-i")
+                                        (t ""))
+                                       (shell-quote-argument file)))))
              (result (shell-command-to-string command)))
         (string-trim result)))
 
@@ -633,7 +637,7 @@
     (setq my/portal-nrepl-port 1900)
 
     (defconst my/portal-classpath-command
-      "clojure -Spath -Sdeps '{:deps {djblue/portal {:mvn/version \"0.8.0\"}}}'")
+      "nix-shell --packages clojure --command \"clojure -Spath -Sdeps '{:deps {djblue/portal {:mvn/version \\\"0.8.0\\\"}}}'\"")
 
     (defun my/portal-nrepl-port-open-p ()
       (condition-case nil
@@ -656,6 +660,9 @@
         (setq my/portal-process
               (start-process-shell-command "clojure-portal"
                                            "clojure-portal-output"
+                                           ; TODO use nix-shell to run babashka
+                                           ; portal requires bb 0.2.6, but current
+                                           ; bb in nixpkgs is 0.2.3
                                            (format "bb -cp `%s` --nrepl-server %s"
                                                    my/portal-classpath-command
                                                    my/portal-nrepl-port)))
