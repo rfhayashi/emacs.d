@@ -270,7 +270,7 @@
   #+end_src
 * Clojure
   Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
-
+** Clojure LSP Instalation
   #+begin_src emacs-lisp
     (when (not (executable-find "clojure-lsp"))
       (switch-to-buffer "nix-install-clojure-lsp")
@@ -280,7 +280,7 @@
       (call-process-shell-command "nix-env -i clojure-lsp" nil "nix-install-clojure-lsp" t)
       (kill-buffer "nix-install-clojure-lsp"))
   #+end_src
-  
+** Dotfiles
   #+begin_src clojure :tangle ~/.clojure/injections/deps.edn
     {}
   #+end_src
@@ -378,6 +378,7 @@
                             (portal.api/tap)]}}
   #+end_src
 
+** Emacs Setup
   #+begin_src emacs-lisp
     (defun my/cider-test-run-focused-test ()
       "Run test around point"
