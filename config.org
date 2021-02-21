@@ -272,6 +272,40 @@
   #+begin_src emacs-lisp
     (use-package 'nix-mode)
   #+end_src
+
+  #+begin_src nix :tangle ~/.config/nixpkgs/hello/hello.nix
+    { stdenv, fetchurl, perl }:
+
+    stdenv.mkDerivation {
+      name = "hello-2.1.1";
+      builder = ./builder.sh;
+      src = fetchurl {
+        url = "ftp://ftp.nluug.nl/pub/gnu/hello/hello-2.1.1.tar.gz";
+        sha256 = "1md7jsfd8pa45z73bz1kszpp01yw6x5ljkjk2hx7wl800any6465";
+      };
+      inherit perl;
+    }
+  #+end_src
+
+  #+begin_src bash :tangle ~/.config/nixpkgs/hello/builder.sh
+source $stdenv/setup
+
+PATH=$perl/bin:$PATH
+
+tar xvfz $src
+cd hello-*
+./configure --prefix=$out
+make
+make install
+  #+end_src
+
+  #+begin_src nix :tangle ~/.config/nixpkgs/config.nix
+    {
+      packageOverrides = pkgs: rec {
+        hellox = pkgs.callPackage ./hello/hello.nix {};
+      };
+    }
+  #+end_src
 * Clojure
   Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
 ** Clojure LSP Instalation
