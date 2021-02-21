@@ -285,7 +285,7 @@
       (kill-buffer "nix-install-clojure-lsp"))
   #+end_src
 ** Babashka installation
-   Create overlay to install version 0.2.6 of babashka. I have only managed to make portal use with this version.
+   Create overlay to install version 0.2.6 of babashka. I have only managed to make portal work with this version.
    #+begin_src nix :tangle ~/.config/nixpkgs/overlays/babashka.nix
      self: super:
      {
