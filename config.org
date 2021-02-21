@@ -269,21 +269,35 @@
       (yas-global-mode 1))
   #+end_src
 * Nix
+  To install packages add a src block with ~:noweb-ref nix-packages~ header arg containing the list of packages separated by line breaks.
+  #+begin_src nix :noweb yes :tangle ~/.config/nixpkgs/config.nix
+    {
+      packageOverrides = pkgs: with pkgs; {
+        myPackages = pkgs.buildEnv {
+          name = "my-packages";
+          paths = [
+            <<nix-packages>>
+          ];
+        };
+      };
+    }
+  #+end_src
+
   #+begin_src emacs-lisp
-    (use-package 'nix-mode)
+    (use-package nix-mode)
+
+    ; install nix packages
+    (switch-to-buffer "nix-install-packages")
+    (goto-char (point-max))
+    (call-process-shell-command "nix-env -iA nixpkgs.myPackages" nil  "nix-install-packages" t)
+    (kill-buffer "nix-install-packages")
   #+end_src
 * Clojure
   Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
 ** Clojure LSP Instalation
-  #+begin_src emacs-lisp
-    (when (not (executable-find "clojure-lsp"))
-      (switch-to-buffer "nix-install-clojure-lsp")
-      (goto-char (point-max))
-      ; TODO for some reason it takes a long time until the buffer shows up showing the
-      ; log of the command, it makes it feel like nothing is happening
-      (call-process-shell-command "nix-env -i clojure-lsp" nil "nix-install-clojure-lsp" t)
-      (kill-buffer "nix-install-clojure-lsp"))
-  #+end_src
+   #+begin_src fundamental :noweb-ref nix-packages :tangle no
+     clojure-lsp
+   #+end_src
 ** Babashka installation
    Create overlay to install version 0.2.6 of babashka. I have only managed to make portal work with this version.
    #+begin_src nix :tangle ~/.config/nixpkgs/overlays/babashka.nix
