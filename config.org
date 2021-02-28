@@ -275,10 +275,7 @@
       packageOverrides = pkgs: with pkgs; rec {
         nucli = pkgs.writeScriptBin "nu" ''
                   #!${pkgs.stdenv.shell}
-                  PATH=$PATH:${pkgs.bash}/bin:${pkgs.python}/bin:${pkgs.kubectl}/bin:${pkgs.jq}/bin:${pkgs.awscli}/bin:${pkgs.docker}/bin \ 
-                  NU_HOME=<<homedir()>>/dev \
-                  NUCLI_HOME=<<homedir()>>/dev/nucli \
-                  <<homedir()>>/dev/nucli/nu $@'';
+                  PATH=$PATH:${pkgs.bash}/bin:${pkgs.python}/bin:${pkgs.kubectl}/bin:${pkgs.jq}/bin:${pkgs.awscli}/bin:${pkgs.docker}/bin NU_HOME=<<homedir()>>/dev NUCLI_HOME=<<homedir()>>/dev/nucli <<homedir()>>/dev/nucli/nu $@'';
 
         myPackages = pkgs.buildEnv {
           name = "my-packages";
