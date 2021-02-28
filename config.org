@@ -270,12 +270,19 @@
   #+end_src
 * Nix
   To install packages add a src block with ~:noweb-ref nix-packages~ header arg containing the list of packages separated by line breaks.
+  #+name: local-nix-package
+  #+begin_src emacs-lisp :tangle no
+    (if (file-exists-p "~/.config/emacs/local.nix")
+        "(callPackage ~/.config/emacs/local.nix {})"
+      "")
+  #+end_src
   #+begin_src nix :noweb yes :tangle ~/.config/nixpkgs/config.nix
     {
       packageOverrides = pkgs: with pkgs; {
         myPackages = pkgs.buildEnv {
           name = "my-packages";
           paths = [
+            <<local-nix-package()>>
             <<nix-packages>>
           ];
         };
@@ -846,10 +853,3 @@
     (add-to-list 'org-babel-load-languages '(kubectl .t))
   #+end_src
 
-* Sensitive config
-  Load config/secrets that are sensitive and cannot be published in this repository.
-  #+begin_src emacs-lisp
-    (when (file-exists-p "~/.config/emacs/local.org")
-      (org-babel-tangle-file "~/.config/emacs/local.org")
-      (load-file "~/.config/emacs/local.el"))
-  #+end_src
