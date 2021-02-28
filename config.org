@@ -272,10 +272,18 @@
   To install packages add a src block with ~:noweb-ref nix-packages~ header arg containing the list of packages separated by line breaks.
   #+begin_src nix :noweb yes :tangle ~/.config/nixpkgs/config.nix
     {
-      packageOverrides = pkgs: with pkgs; {
+      packageOverrides = pkgs: with pkgs; rec {
+        nucli = pkgs.writeScriptBin "nu" ''
+                  #!${pkgs.stdenv.shell}
+                  PATH=$PATH:${pkgs.bash}/bin:${pkgs.python}/bin:${pkgs.kubectl}/bin:${pkgs.jq}/bin:${pkgs.awscli}/bin:${pkgs.docker}/bin \ 
+                  NU_HOME=<<homedir()>>/dev \
+                  NUCLI_HOME=<<homedir()>>/dev/nucli \
+                  <<homedir()>>/dev/nucli/nu $@'';
+
         myPackages = pkgs.buildEnv {
           name = "my-packages";
           paths = [
+            nucli
             <<nix-packages>>
           ];
         };
