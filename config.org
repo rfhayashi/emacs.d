@@ -757,6 +757,14 @@
       (interactive)
       (let* ((result (org-babel-execute-src-block)))
         (my/send-to-portal result)))
+
+    (defun my/org-babel-watch-src-block-to-clojure-portal ()
+      (interactive)
+      (setq my/portal-watch-timer (run-at-time "1 sec" 2 #'my/org-babel-execute-src-block-to-clojure-portal)))
+
+    (defun my/org-babel-watch-cancel ()
+      (interactive)
+      (cancel-timer my/portal-watch-timer))
   #+end_src
 * Microk8s Org-babel
   #+begin_src emacs-lisp
