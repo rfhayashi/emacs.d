@@ -290,7 +290,6 @@
     (switch-to-buffer "nix-install-packages")
     (goto-char (point-max))
     (call-process-shell-command "nix-env -iA nixpkgs.myPackages" nil  "nix-install-packages" t)
-    (kill-buffer "nix-install-packages")
   #+end_src
 * Clojure
   Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
