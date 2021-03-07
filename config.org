@@ -510,7 +510,7 @@
       (setq cider-clojure-cli-global-options "-A:portal -A:injections")
       ; make sure we're using a http-kit version that is compatible with portal
       (cider-add-to-alist 'cider-jack-in-dependencies "http-kit" "2.5.0")
-      (my/setup-matcher-combinators)
+      ;(my/setup-matcher-combinators)
       (advice-add 'cider--update-jack-in-cmd :around #'my/cider--update-jack-in-cmd))
 
     (use-package lsp-mode
