@@ -852,4 +852,14 @@
 
     (add-to-list 'org-babel-load-languages '(kubectl .t))
   #+end_src
+* Racket
+  #+begin_src fundamental :tangle no :noweb-ref nix-packages
+    racket
+  #+end_src
+  #+begin_src emacs-lisp
+    (use-package racket-mode
+      :config
+      (add-hook 'racket-mode-hook #'enable-paredit-mode))
 
+    (use-package geiser)
+  #+end_src
