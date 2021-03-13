@@ -13,6 +13,6 @@
          (json/parse-string keyword)
          :passages
          first
-         (str/replace #"\n +" " ")
+         (str/replace #"\n *" " ")
          str/trim))
 #+end_src
