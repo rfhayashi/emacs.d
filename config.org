@@ -702,6 +702,7 @@
        :config
        (my/leader-key-commands
         racket-mode
+        :eval/top-level-form 'racket-send-definition
         :eval/last-sexp 'geiser-eval-last-sexp
         :eval/last-sexp-pprint 'geiser-eval-last-sexp-and-print
         :repl/start 'run-racket))
