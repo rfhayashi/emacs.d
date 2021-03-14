@@ -121,7 +121,7 @@
       (evil-collection-setup-minibuffer t))
   #+end_src
 * Keybindings
-  #+begin_src emacs-lisp
+  #+begin_src emacs-lisp :tangle no
     (use-package corkey
       :straight (corkey
                  :type git
@@ -134,6 +134,51 @@
       (corkey/install-bindings))
 
   #+end_src
+
+  #+begin_src emacs-lisp
+    (defvar my/leader-commands '())
+
+    (defun my/add-leader-command (mode key function)
+      (setq my/leader-commands (a-assoc-in my/leader-commands `(,mode ,key) function)))
+
+    (defmacro my/mode-leader-commands (mode keys->commands)
+      `(dolist (key->command (quote ,keys->commands))
+         (my/add-leader-command (quote ,mode) (car key->command) (cdr key->command))))
+
+    (defun my/leader-link (key)
+      `((lambda ()
+          (interactive)
+          (let ((f (a-get-in my/leader-commands (list major-mode ,key))))
+            (funcall f))) :which-key ,(symbol-name key)))
+
+    (use-package general
+      :config
+      (general-evil-setup t)
+
+      (general-create-definer
+        my/space-key-def
+        :keymaps '(normal insert visual emacs)
+        :prefix "SPC"
+        :global-prefix "C-SPC")
+
+      (general-create-definer
+        my/leader-key-def
+        :keymaps '(normal insert visual emacs)
+        :prefix ","
+        :global-prefix "C-,"))
+  #+end_src
+** Windows
+   #+begin_src emacs-lisp
+     (my/space-key-def
+       "w" '(:ignore t :which-key "window")
+       "w/" 'split-window-right
+       "w-" 'split-window-below)
+   #+end_src
+** Leader bindings
+   #+begin_src emacs-lisp
+     (my/leader-key-def
+       "eb" (my/leader-link :eval/buffer))
+   #+end_src
 * File Management
 ** Dired
    Better listing switches and enable h/l keybindings to navigate dirs up and down.
