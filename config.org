@@ -560,7 +560,8 @@
       (dolist (el '(("el" . "src emacs-lisp")
                     ("clj" . "src clojure")
                     ("bb" . "src clojure :backend babashka")
-                    ("bash" . "src bash")))
+                    ("bash" . "src bash")
+                    ("rkt" . "src racket")))
         (add-to-list 'org-structure-template-alist el)))
 
     (use-package evil-org
@@ -862,4 +863,12 @@
       (add-hook 'racket-mode-hook #'enable-paredit-mode))
 
     (use-package geiser)
+
+    (use-package ob-racket
+          :straight (ob-racket
+                     :type git
+                     :host github
+                     :branch "master"
+                     :files ("ob-racket.el")
+                     :repo "hasu/emacs-ob-racket"))
   #+end_src
