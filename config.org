@@ -121,36 +121,8 @@
       (evil-collection-setup-minibuffer t))
   #+end_src
 * Keybindings
-  #+begin_src emacs-lisp :tangle no
-    (use-package corkey
-      :straight (corkey
-                 :type git
-                 :host github
-                 :branch "main"
-                 :files ("corkey/corkey.el")
-                 :repo "lambdaisland/corgi-packages")
-      :config
-      (corkey-mode 1)
-      (corkey/install-bindings))
-
-  #+end_src
-
+** General
   #+begin_src emacs-lisp
-    (defvar my/leader-commands '())
-
-    (defun my/add-leader-command (mode key function)
-      (setq my/leader-commands (a-assoc-in my/leader-commands `(,mode ,key) function)))
-
-    (defmacro my/mode-leader-commands (mode keys->commands)
-      `(dolist (key->command (quote ,keys->commands))
-         (my/add-leader-command (quote ,mode) (car key->command) (cdr key->command))))
-
-    (defun my/leader-link (key)
-      `((lambda ()
-          (interactive)
-          (let ((f (a-get-in my/leader-commands (list major-mode ,key))))
-            (funcall f))) :which-key ,(symbol-name key)))
-
     (use-package general
       :config
       (general-evil-setup t)
@@ -161,23 +133,104 @@
         :prefix "SPC"
         :global-prefix "C-SPC")
 
-      (general-create-definer
-        my/leader-key-def
-        :keymaps '(normal insert visual emacs)
-        :prefix ","
-        :global-prefix "C-,"))
+      (my/space-key-def
+        "SPC" 'execute-extended-command
+        "'" 'shell))
   #+end_src
+** Buffers
+   #+begin_src emacs-lisp
+     (my/space-key-def
+       "b" '(:ignore t :which-key "buffer")
+       "bb" 'counsel-switch-buffer
+       "bd" 'kill-this-buffer
+       "bs" 'scratch)
+   #+end_src
+** Files
+   #+begin_src emacs-lisp
+     (my/space-key-def
+       "f" '(:ignore t :which-key "file")
+       "ff" 'find-file)
+   #+end_src
 ** Windows
    #+begin_src emacs-lisp
      (my/space-key-def
        "w" '(:ignore t :which-key "window")
        "w/" 'split-window-right
-       "w-" 'split-window-below)
+       "w-" 'split-window-below
+       "wd" 'delete-window
+       "wu" 'winner-undo
+       "1" 'winum-select-window-1
+       "2" 'winum-select-window-2
+       "3" 'winum-select-window-3
+       "4" 'winum-select-window-4
+       "5" 'winum-select-window-5
+       "6" 'winum-select-window-6
+       "7" 'winum-select-window-7
+       "8" 'winum-select-window-8
+       "9" 'winum-select-window-9
+       "0" 'winum-select-window-0-or-10)
    #+end_src
 ** Leader bindings
    #+begin_src emacs-lisp
-     (my/leader-key-def
-       "eb" (my/leader-link :eval/buffer))
+     (defvar my/leader-key-bindings
+       '("e" '(:ignore t :which-key "eval")
+         "eb" :eval/buffer
+         "ef" :eval/top-level-form
+         "ee" :eval/last-sexp
+         "ep" :eval/last-sexp-pprint
+         "et" :eval/to-portal
+         "t" :run-test/focused
+         "b" :run-test/buffer
+         "s" '(:ignore t :which-key "repl")
+         "sq" :repl/quit
+         "sx" :repl/refresh
+         "'" :repl/start
+         "g" '(:ignore t :which-key "jump")
+         "gg" :jump/definition
+         "gr" :jump/references
+         "gd" :jump/doc
+         "r" '(:ignore t :which-key "refactor")
+         "rr" :refactor/rename))
+
+     (general-create-definer my/leader-def
+       :prefix ",")
+
+     (defun my/--find-key-binding (key-expr)
+       (if-let ((key-binding (car
+                              (seq-find
+                               (lambda (pair)
+                                 (let ((key (cadr pair)))
+                                   (eq key-expr key)))
+                               (seq-partition my/leader-key-bindings 2)))))
+           key-binding
+         (error (format "No such key %s" (symbol-name key-expr)))))
+
+     (defun my/--resolve-binding (key-expr)
+       (cond ((keywordp key-expr)
+              (my/--find-key-binding key-expr))
+             (key-expr)))
+
+     (defun my/--mode-bindings (bindings)
+       (apply #'append
+              (seq-concatenate
+               'list
+               (seq-filter
+                (lambda (pair)
+                  (not (keywordp (cadr pair))))
+                (seq-partition my/leader-key-bindings 2))
+               (mapcar
+                (lambda (pair)
+                  (let ((key-expr (car pair))
+                        (target (cadr pair)))
+                    `(,(my/--resolve-binding key-expr)
+                      ,target)))
+                (seq-partition bindings 2)))))
+
+     (defmacro my/leader-key-commands (major-mode &rest bindings)
+       `(my/leader-def
+          :states '(normal visual)
+          :keymaps (quote (,(intern (concat (symbol-name major-mode) "-map"))))
+          ,@(my/--mode-bindings bindings)))
    #+end_src
 * File Management
 ** Dired
@@ -223,13 +276,21 @@
 
     (defmacro user/setup-paredit-for (language)
       `(add-hook
-	(quote ,(make-symbol (concat (symbol-name language) "-mode-hook")))
-	#'enable-paredit-mode))
+        (quote ,(make-symbol (concat (symbol-name language) "-mode-hook")))
+        #'enable-paredit-mode))
 
     (use-package
       paredit
       :config
       (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode))
+
+    (my/space-key-def
+      "k" '(:ignore t :which-key "paredit")
+      "ks" 'paredit-forward-slurp-sexp
+      "kb" 'paredit-forward-barf-sexp
+      "kd" 'paredit-kill
+      "kr" 'paredit-raise-sexp
+      "kp" 'paredit-splice-sexp)
   #+end_src
 * Ivy
   [[https://github.com/abo-abo/swiper][Ivy]] provides a completion mechanism to find files, projects and other things.
@@ -291,6 +352,9 @@
      (use-package magit)
 
      (use-package evil-magit)
+
+     (my/space-key-def
+       "gs" 'magit-status)
   #+end_src
 * Projectile
   Sets up [[https://github.com/bbatsov/projectile][Projectile]].
@@ -306,6 +370,13 @@
     (use-package counsel-projectile
       :config
       (counsel-projectile-mode))
+
+    (my/space-key-def
+      "p" '(:ignore t :which-key "project")
+      "pf" 'projectile-find-file
+      "pp" 'projectile-switch-project
+      "'" 'projectile-run-shell
+      "/" 'projectile-ag)
   #+end_src
 * Yasnippet
   #+begin_src emacs-lisp
@@ -313,7 +384,36 @@
       :config
       (yas-global-mode 1))
   #+end_src
-* Nix
+* Scratch
+  [[https://github.com/ffevotte/scratch.el][scratch]] make it easier to create scratch buffers. This is augmented with scratch-buffer-setup function
+  by Protesilaos Stavrou ([[https://protesilaos.com/codelog/2020-08-03-emacs-custom-functions-galore/][See]]).
+  #+begin_src emacs-lisp
+    (use-package scratch
+      :config
+      (defun prot/scratch-buffer-setup ()
+	"Add contents to `scratch' buffer and name it accordingly."
+	(let* ((mode (format "%s" major-mode))
+	       (string (concat "Scratch buffer for: " mode "\n\n")))
+	  (when scratch-buffer
+	    (save-excursion
+	      (insert string)
+	      (goto-char (point-min))
+	      (comment-region (point-at-bol) (point-at-eol)))
+	    (forward-line 2))
+	  (rename-buffer (concat "*Scratch for " mode "*") t)))
+      (add-hook 'scratch-create-buffer-hook 'prot/scratch-buffer-setup))
+  #+end_src
+* Languages
+** Emacs Lisp
+   #+begin_src emacs-lisp
+     (my/leader-key-commands
+      emacs-lisp-mode
+      :eval/buffer 'eval-buffer
+      :eval/top-level-form 'eval-defun
+      :eval/last-sexp 'eval-last-sexp
+      :eval/last-sexp-pprint 'eval-print-last-sexp)
+   #+end_src
+** Nix
   To install packages add a src block with ~:noweb-ref nix-packages~ header arg containing the list of packages separated by line breaks.
   #+name: local-nix-package
   #+begin_src emacs-lisp :tangle no
@@ -343,257 +443,281 @@
     (goto-char (point-max))
     (call-process-shell-command "nix-env -iA nixpkgs.myPackages" nil  "nix-install-packages" t)
   #+end_src
-* Clojure
-  Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
-** Clojure LSP Instalation
-   #+begin_src fundamental :noweb-ref nix-packages :tangle no
-     clojure-lsp
+** Clojure
+   Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
+*** Clojure LSP Instalation
+    #+begin_src fundamental :noweb-ref nix-packages :tangle no
+      clojure-lsp
+    #+end_src
+*** Babashka installation
+    Create overlay to install version 0.2.6 of babashka. I have only managed to make portal work with this version.
+    #+begin_src nix :tangle ~/.config/nixpkgs/overlays/babashka.nix
+      self: super:
+      {
+        babashka = super.babashka.overrideAttrs (old: rec {
+          version = "0.2.6";
+          reflectionJson = super.fetchurl {
+            name = "reflection.json";
+            url = "https://github.com/borkdude/${old.pname}/releases/download/v${version}/${old.pname}-${version}-reflection.json";
+            sha256 = "1c7f0z1hi0vcfz532r3fhr4c64jjqppf94idpa1jziz1dljkwk85";
+          };
+          src = super.fetchurl {
+            url = "https://github.com/borkdude/${old.pname}/releases/download/v${version}/${old.pname}-${version}-standalone.jar";
+            sha256 = "1anpslb925q8b3yy6ljrygq7ax8laalbzrk0rfy4y8aaillfswxy";
+          };
+          buildPhase = ''
+            native-image \
+              -jar ${src} \
+              -H:Name=bb \
+              ${super.lib.optionalString super.stdenv.isDarwin ''-H:-CheckToolchain''} \
+              -H:+ReportExceptionStackTraces \
+              -J-Dclojure.spec.skip-macros=true \
+              -J-Dclojure.compiler.direct-linking=true \
+              "-H:IncludeResources=BABASHKA_VERSION" \
+              "-H:IncludeResources=SCI_VERSION" \
+              -H:ReflectionConfigurationFiles=${reflectionJson} \
+              --initialize-at-build-time \
+              -H:Log=registerResource: \
+              -H:EnableURLProtocols=http,https,jar \
+              --enable-all-security-services \
+              -H:+JNI \
+              --verbose \
+              --no-fallback \
+              --no-server \
+              --report-unsupported-elements-at-runtime \
+              "--initialize-at-run-time=org.postgresql.sspi.SSPIClient" \
+              "-J-Xmx4500m"
+          '';
+        });
+      }
+    #+end_src
+*** Dotfiles
+   #+begin_src clojure :tangle ~/.clojure/injections/deps.edn
+     {}
    #+end_src
-** Babashka installation
-   Create overlay to install version 0.2.6 of babashka. I have only managed to make portal work with this version.
-   #+begin_src nix :tangle ~/.config/nixpkgs/overlays/babashka.nix
-     self: super:
-     {
-       babashka = super.babashka.overrideAttrs (old: rec {
-         version = "0.2.6";
-         reflectionJson = super.fetchurl {
-           name = "reflection.json";
-           url = "https://github.com/borkdude/${old.pname}/releases/download/v${version}/${old.pname}-${version}-reflection.json";
-           sha256 = "1c7f0z1hi0vcfz532r3fhr4c64jjqppf94idpa1jziz1dljkwk85";
-         };
-         src = super.fetchurl {
-           url = "https://github.com/borkdude/${old.pname}/releases/download/v${version}/${old.pname}-${version}-standalone.jar";
-           sha256 = "1anpslb925q8b3yy6ljrygq7ax8laalbzrk0rfy4y8aaillfswxy";
-         };
-         buildPhase = ''
-           native-image \
-             -jar ${src} \
-             -H:Name=bb \
-             ${super.lib.optionalString super.stdenv.isDarwin ''-H:-CheckToolchain''} \
-             -H:+ReportExceptionStackTraces \
-             -J-Dclojure.spec.skip-macros=true \
-             -J-Dclojure.compiler.direct-linking=true \
-             "-H:IncludeResources=BABASHKA_VERSION" \
-             "-H:IncludeResources=SCI_VERSION" \
-             -H:ReflectionConfigurationFiles=${reflectionJson} \
-             --initialize-at-build-time \
-             -H:Log=registerResource: \
-             -H:EnableURLProtocols=http,https,jar \
-             --enable-all-security-services \
-             -H:+JNI \
-             --verbose \
-             --no-fallback \
-             --no-server \
-             --report-unsupported-elements-at-runtime \
-             "--initialize-at-run-time=org.postgresql.sspi.SSPIClient" \
-             "-J-Xmx4500m"
-         '';
-       });
-     }
+
+   #+begin_src clojure :tangle ~/.clojure/injections/src/portal.clj
+     (ns portal
+       (:require [portal.api :as portal]))
+
+     (defonce portal* (atom nil))
+
+     (defn instance []
+       (reset! portal* (portal/open @portal*))
+       @portal*)
+
+     (defn send [v]
+       (reset! (instance) v))
+
+     (defn fetch []
+       @(instance))
+
    #+end_src
-** Dotfiles
-  #+begin_src clojure :tangle ~/.clojure/injections/deps.edn
-    {}
-  #+end_src
 
-  #+begin_src clojure :tangle ~/.clojure/injections/src/portal.clj
-    (ns portal
-      (:require [portal.api :as portal]))
+   #+begin_src clojure :tangle ~/.clojure/injections/src/tap.clj
+     (ns tap
+       (:refer-clojure :exclude [>]))
 
-    (defonce portal* (atom nil))
+     (defn m [message v]
+       (tap> {:message message
+              :tap v})
+       v)
 
-    (defn instance []
-      (reset! portal* (portal/open @portal*))
-      @portal*)
+     (defn >-reader [form]
+       `(let [t# ~form]
+          (tap> t#)
+          t#))
 
-    (defn send [v]
-      (reset! (instance) v))
+     (defmacro > [form]
+       (>-reader form))
 
-    (defn fetch []
-      @(instance))
+     (defn d-reader [form]
+       `(let [t# ~form]
+          (tap> {:code (pr-str (quote ~form))
+                 :tap t#})
+          t#))
 
-  #+end_src
+     (defmacro d [form]
+       (d-reader form))
+   #+end_src
 
-  #+begin_src clojure :tangle ~/.clojure/injections/src/tap.clj
-    (ns tap
-      (:refer-clojure :exclude [>]))
+   #+begin_src clojure :tangle ~/.clojure/injections/src/data_readers.clj
+     {tap tap/>-reader
+      tapd tap/d-reader}
+   #+end_src
 
-    (defn m [message v]
-      (tap> {:message message
-             :tap v})
-      v)
+   #+begin_src clojure :tangle ~/.clojure/injections/src/user.clj
+     (ns user
+       (:require [tap]
+                 [portal]))
 
-    (defn >-reader [form]
-      `(let [t# ~form]
-         (tap> t#)
-         t#))
+     (portal.api/tap)
+   #+end_src
 
-    (defmacro > [form]
-      (>-reader form))
+   #+begin_src clojure :tangle ~/.clojure/deps.edn :noweb yes
+     {:aliases
 
-    (defn d-reader [form]
-      `(let [t# ~form]
-         (tap> {:code (pr-str (quote ~form))
-                :tap t#})
-         t#))
+      {; Linters
+       :cljfmt {:deps {cljfmt/cljfmt {:mvn/version "0.6.4"}}
+                :main-opts ["-m" "cljfmt.main"]}
+       :nsorg {:deps {nsorg-cli/nsorg-cli {:mvn/version "0.3.1"}}
+               :main-opts ["-m" "nsorg.cli"]}
+       :outdated {:extra-deps {olical/depot {:mvn/version "1.8.4"}}
+                  :main-opts ["-m" "depot.outdated.main"]}
 
-    (defmacro d [form]
-      (d-reader form))
-  #+end_src
+       :oz {:extra-deps {metasoarous/oz {:mvn/version "1.6.0-alpha6"}}}
+       :portal {:extra-deps {djblue/portal {:mvn/version "0.8.0"}}}
+       :injections {:extra-deps {my/tap {:local/root "<<homedir()>>/.clojure/injections"}}}}}
+   #+end_src
 
-  #+begin_src clojure :tangle ~/.clojure/injections/src/data_readers.clj
-    {tap tap/>-reader
-     tapd tap/d-reader}
-  #+end_src
+   #+begin_src clojure :tangle ~/.clojure/injections/project.clj
+     (defproject my/tap "0.0.1-SNAPSHOT")
+   #+end_src
 
-  #+begin_src clojure :tangle ~/.clojure/injections/src/user.clj
-    (ns user
-      (:require [tap]
-                [portal]))
+   To use tap with leiningen, execute this block manually.
+   #+begin_src bash :tangle no :noweb yes
+     cd <<homedir()>>/.clojure/injections
+     lein install
+   #+end_src
 
-    (portal.api/tap)
-  #+end_src
+   #+begin_src clojure :tangle ~/.lein/profiles.clj
+     {:user
+      {:dependencies        [[my/tap "0.0.1-SNAPSHOT"]
+                             [djblue/portal "0.8.0"]]
+       :injections          [(require 'tap)
+                             (require 'portal)
+                             (portal.api/tap)]}}
+   #+end_src
 
-  #+begin_src clojure :tangle ~/.clojure/deps.edn :noweb yes
-    {:aliases
+*** Emacs Setup
+   #+begin_src emacs-lisp
+     (defun my/cider-test-run-focused-test ()
+       "Run test around point"
+       (interactive)
+       (cider-load-buffer)
+       (cider-test-run-test))
 
-     {; Linters
-      :cljfmt {:deps {cljfmt/cljfmt {:mvn/version "0.6.4"}}
-               :main-opts ["-m" "cljfmt.main"]}
-      :nsorg {:deps {nsorg-cli/nsorg-cli {:mvn/version "0.3.1"}}
-              :main-opts ["-m" "nsorg.cli"]}
-      :outdated {:extra-deps {olical/depot {:mvn/version "1.8.4"}}
-                 :main-opts ["-m" "depot.outdated.main"]}
+     (defun my/cider-test-run-ns-tests ()
+       "Run namespace test"
+       (interactive)
+       (cider-load-buffer)
+       (cider-test-run-ns-tests nil))
 
-      :oz {:extra-deps {metasoarous/oz {:mvn/version "1.6.0-alpha6"}}}
-      :portal {:extra-deps {djblue/portal {:mvn/version "0.8.0"}}}
-      :injections {:extra-deps {my/tap {:local/root "<<homedir()>>/.clojure/injections"}}}}}
-  #+end_src
+     (defun my/portal-cider-inspect-last-result ()
+       (interactive)
+       (let ((repl (cider-current-repl)))
+         (nrepl-send-sync-request `("op" "eval" "code" "(portal/send *1)") repl)))
 
-  #+begin_src clojure :tangle ~/.clojure/injections/project.clj
-    (defproject my/tap "0.0.1-SNAPSHOT")
-  #+end_src
+     (defun my/portal-cider-open ()
+       (interactive)
+       (let ((repl (cider-current-repl)))
+         (nrepl-send-sync-request `("op" "eval" "code" "(portal/instance)") repl)))
 
-  To use tap with leiningen, execute this block manually.
-  #+begin_src bash :tangle no :noweb yes
-    cd <<homedir()>>/.clojure/injections
-    lein install
-  #+end_src
+     (defun my/clojure-project-nix-packages (project-type)
+       (pcase project-type
+         ('clojure-cli "clojure")
+         ('lein "leiningen")))
 
-  #+begin_src clojure :tangle ~/.lein/profiles.clj
-    {:user
-     {:dependencies        [[my/tap "0.0.1-SNAPSHOT"]
-                            [djblue/portal "0.8.0"]]
-      :injections          [(require 'tap)
-                            (require 'portal)
-                            (portal.api/tap)]}}
-  #+end_src
+     (defun my/cider--update-jack-in-cmd (orig-fun &rest args)
+       (cl-letf (((symbol-function 'cider-jack-in-resolve-command) (lambda (project-type)(cider-jack-in-command project-type))))
+         (let* ((params (apply orig-fun args))
+                (cmd (prin1-to-string (plist-get params :jack-in-cmd)))
+                (project-type (cider-project-type (plist-get params :project-dir)))
+                (packages (my/clojure-project-nix-packages project-type)))
+           (plist-put params :jack-in-cmd (format "nix-shell --packages %s --command %s" packages cmd)))))
 
-** Emacs Setup
-  #+begin_src emacs-lisp
-    (defun my/cider-test-run-focused-test ()
-      "Run test around point"
-      (interactive)
-      (cider-load-buffer)
-      (cider-test-run-test))
+     (use-package clojure-mode
+       :config
+       (add-hook 'clojure-mode-hook #'enable-paredit-mode))
 
-    (defun my/cider-test-run-ns-tests ()
-      "Run namespace test"
-      (interactive)
-      (cider-load-buffer)
-      (cider-test-run-ns-tests nil))
+     (defun my/setup-matcher-combinators ()
+       (cider-add-to-alist 'cider-jack-in-lein-plugins "cider/cider-nrepl" "0.25.5")
 
-    (defun my/portal-cider-inspect-last-result ()
-      (interactive)
-      (let ((repl (cider-current-repl)))
-        (nrepl-send-sync-request `("op" "eval" "code" "(portal/send *1)") repl)))
+       (advice-add 'cider-ansi-color-string-p :override
+                   (lambda (string) (string-match "\\[" string)))
 
-    (defun my/portal-cider-open ()
-      (interactive)
-      (let ((repl (cider-current-repl)))
-        (nrepl-send-sync-request `("op" "eval" "code" "(portal/instance)") repl)))
+       (advice-add 'cider-font-lock-as
+                   :before
+                   (lambda (&rest r)
+                     (advice-add 'substring-no-properties :override #'identity)))
+       (advice-add 'cider-font-lock-as
+                   :after
+                   (lambda (&rest r)
+                     (advice-remove 'substring-no-properties #'identity))))
 
-    (defun my/clojure-project-nix-packages (project-type)
-      (pcase project-type
-        ('clojure-cli "clojure")
-        ('lein "leiningen")))
+     (use-package cider
+       :config
+       (setq cider-save-file-on-load t)
+       (setq cider-repl-pop-to-buffer-on-connect nil)
+       (setq cider-test-defining-forms '("deftest" "defspec" "defflow"))
+       (setq org-babel-clojure-backend 'cider)
+       (setq clojure-toplevel-inside-comment-form t)
+       (setq cider-clojure-cli-global-options "-A:portal -A:injections")
+       ; make sure we're using a http-kit version that is compatible with portal
+       (cider-add-to-alist 'cider-jack-in-dependencies "http-kit" "2.5.0")
+       ;(my/setup-matcher-combinators)
+       (advice-add 'cider--update-jack-in-cmd :around #'my/cider--update-jack-in-cmd)
+       (my/leader-key-commands
+        clojure-mode
+        :eval/buffer 'cider-eval-buffer
+        :eval/top-level-form 'cider-eval-defun-at-point
+        :eval/last-sexp 'cider-eval-last-sexp
+        :eval/last-sexp-pprint 'cider-eval-print-last-sexp
+        :run-test/focused 'cider-test-run-test
+        :run-test/buffer 'cider-test-run-ns-tests
+        :repl/quit 'cider-quit
+        :repl/refresh 'cider-refresh
+        :repl/start 'cider-jack-in
+        :jump/definition 'lsp-find-definition
+        :jump/references 'lsp-find-references
+        :jump/doc 'cider-doc
+        :refactor/rename 'lsp-rename))
 
-    (defun my/cider--update-jack-in-cmd (orig-fun &rest args)
-      (cl-letf (((symbol-function 'cider-jack-in-resolve-command) (lambda (project-type)(cider-jack-in-command project-type))))
-        (let* ((params (apply orig-fun args))
-               (cmd (prin1-to-string (plist-get params :jack-in-cmd)))
-               (project-type (cider-project-type (plist-get params :project-dir)))
-               (packages (my/clojure-project-nix-packages project-type)))
-          (plist-put params :jack-in-cmd (format "nix-shell --packages %s --command %s" packages cmd)))))
+     (use-package lsp-mode
+       :config
+       (dolist (m '(clojure-mode
+                    clojurec-mode
+                    clojurescript-mode
+                    clojurex-mode))
+         (add-to-list 'lsp-language-id-configuration `(,m . "clojure")))
+       (setq lsp-enable-indentation nil)
+       (add-hook 'clojure-mode-hook #'lsp)
+       (add-hook 'clojurec-mode-hook #'lsp)
+       (add-hook 'clojurescript-mode-hook #'lsp))
 
-    (use-package clojure-mode
-      :config
-      (add-hook 'clojure-mode-hook #'enable-paredit-mode))
+     (use-package clj-refactor
+       :config
+       (clj-refactor-mode 1))
+   #+end_src
+** Racket
+   #+begin_src fundamental :tangle no :noweb-ref nix-packages
+     racket
+   #+end_src
+   #+begin_src emacs-lisp
+     (use-package racket-mode
+       :config
+       (add-hook 'racket-mode-hook #'enable-paredit-mode))
 
-    (defun my/setup-matcher-combinators ()
-      (cider-add-to-alist 'cider-jack-in-lein-plugins "cider/cider-nrepl" "0.25.5")
+     (use-package geiser
+       :config
+       (my/leader-key-commands
+        racket-mode
+        :eval/last-sexp 'geiser-eval-last-sexp
+        :eval/last-sexp-pprint 'geiser-eval-last-sexp-and-print
+        :repl/start 'run-racket))
 
-      (advice-add 'cider-ansi-color-string-p :override
-                  (lambda (string) (string-match "\\[" string)))
+     (use-package ob-racket
+           :straight (ob-racket
+                      :type git
+                      :host github
+                      :branch "master"
+                      :files ("ob-racket.el")
+                      :repo "hasu/emacs-ob-racket"))
 
-      (advice-add 'cider-font-lock-as
-                  :before
-                  (lambda (&rest r)
-                    (advice-add 'substring-no-properties :override #'identity)))
-      (advice-add 'cider-font-lock-as
-                  :after
-                  (lambda (&rest r)
-                    (advice-remove 'substring-no-properties #'identity))))
 
-    (use-package cider
-      :config
-      (setq cider-save-file-on-load t)
-      (setq cider-repl-pop-to-buffer-on-connect nil)
-      (setq cider-test-defining-forms '("deftest" "defspec" "defflow"))
-      (setq org-babel-clojure-backend 'cider)
-      (setq clojure-toplevel-inside-comment-form t)
-      (setq cider-clojure-cli-global-options "-A:portal -A:injections")
-      ; make sure we're using a http-kit version that is compatible with portal
-      (cider-add-to-alist 'cider-jack-in-dependencies "http-kit" "2.5.0")
-      ;(my/setup-matcher-combinators)
-      (advice-add 'cider--update-jack-in-cmd :around #'my/cider--update-jack-in-cmd))
-
-    (use-package lsp-mode
-      :config
-      (dolist (m '(clojure-mode
-                   clojurec-mode
-                   clojurescript-mode
-                   clojurex-mode))
-        (add-to-list 'lsp-language-id-configuration `(,m . "clojure")))
-      (setq lsp-enable-indentation nil)
-      (add-hook 'clojure-mode-hook #'lsp)
-      (add-hook 'clojurec-mode-hook #'lsp)
-      (add-hook 'clojurescript-mode-hook #'lsp))
-
-    (use-package clj-refactor
-      :config
-      (clj-refactor-mode 1))
-  #+end_src
-* Scratch
-  [[https://github.com/ffevotte/scratch.el][scratch]] make it easier to create scratch buffers. This is augmented with scratch-buffer-setup function
-  by Protesilaos Stavrou ([[https://protesilaos.com/codelog/2020-08-03-emacs-custom-functions-galore/][See]]).
-  #+begin_src emacs-lisp
-    (use-package scratch
-      :config
-      (defun prot/scratch-buffer-setup ()
-	"Add contents to `scratch' buffer and name it accordingly."
-	(let* ((mode (format "%s" major-mode))
-	       (string (concat "Scratch buffer for: " mode "\n\n")))
-	  (when scratch-buffer
-	    (save-excursion
-	      (insert string)
-	      (goto-char (point-min))
-	      (comment-region (point-at-bol) (point-at-eol)))
-	    (forward-line 2))
-	  (rename-buffer (concat "*Scratch for " mode "*") t)))
-      (add-hook 'scratch-create-buffer-hook 'prot/scratch-buffer-setup))
-  #+end_src
+   #+end_src
 * Org mode
+** Main
   My [[https://orgmode.org/][org mode]] and [[https://github.com/org-roam/org-roam][org roam]] setup.
   #+begin_src emacs-lisp
     (with-eval-after-load 'org
@@ -607,7 +731,14 @@
                     ("bb" . "src clojure :backend babashka")
                     ("bash" . "src bash")
                     ("rkt" . "src racket")))
-        (add-to-list 'org-structure-template-alist el)))
+        (add-to-list 'org-structure-template-alist el))
+      (my/leader-key-commands
+       org-mode
+       :eval/top-level-form 'org-ctrl-c-ctrl-c
+       :eval/buffer 'org-babel-execute-buffer
+       :eval/to-portal 'my/org-babel-execute-src-block-to-clojure-portal
+       :jump/definition 'org-open-at-point
+       :repl/start 'my/ob-clojure-cider-jack-in-clj))
 
     (use-package evil-org
       :after org
@@ -624,7 +755,12 @@
       :config
       (setq org-roam-directory rfh/org-roam-dir)
       (setq org-roam-completion-system 'ivy)
-      (add-hook 'after-init-hook 'org-roam-mode))
+      (add-hook 'after-init-hook 'org-roam-mode)
+      (my/space-key-def
+        "r" '(:ignore t :which-key "roam")
+        "rf" 'org-roam-find-file
+        "rr" 'org-roam-dailies-find-today
+        "rt" 'org-roam-dailies-find-tomorrow))
 
     (use-package company-org-roam
       :after company
@@ -640,280 +776,261 @@
     (use-package visual-fill-column
       :hook (org-mode . my/org-mode-visual-fill))
   #+end_src
-* Org Babel + Clojure
-  Customizations on top of ob-clojure.
-** Support for babashka
-   Makes it possible to use [[https://github.com/borkdude/babashka][babashka]] via [[https://orgmode.org/worg/org-contrib/babel/][org babel]].
+** Org Babel + Clojure
+   Customizations on top of ob-clojure.
+*** Support for babashka
+    Makes it possible to use [[https://github.com/borkdude/babashka][babashka]] via [[https://orgmode.org/worg/org-contrib/babel/][org babel]].
 
-   To enable that you can either ~(setq org-babel-clojure-backend 'babashka)~, which will always use babashka when
-   using clojure as language, or you can add a header argument ~:backend babashka~, which will only apply to
-   a specific source block. Note that you need to have babashka installed in your system.
+    To enable that you can either ~(setq org-babel-clojure-backend 'babashka)~, which will always use babashka when
+    using clojure as language, or you can add a header argument ~:backend babashka~, which will only apply to
+    a specific source block. Note that you need to have babashka installed in your system.
 
-   This code was forked from https://git.jeremydormitzer.com/jdormit/dotfiles/commit/5f9dbe53cea2b37fc89cc49f858f98387da99576
-   with a few modifications.
+    This code was forked from https://git.jeremydormitzer.com/jdormit/dotfiles/commit/5f9dbe53cea2b37fc89cc49f858f98387da99576
+    with a few modifications.
    
-** Support for deps.edn
-   It supports setting deps.edn as a source block. To do that create a clojure source block like:
+*** Support for deps.edn
+    It supports setting deps.edn as a source block. To do that create a clojure source block like:
 
-   #+begin_example
-     ,#+name: deps-edn
-     ,#+begin_src clojure
-     {:deps org.clojure/tools.reader {:mvn/version "1.1.1"}}
-     ,#+end_src
-   #+end_example
+    #+begin_example
+      ,#+name: deps-edn
+      ,#+begin_src clojure
+      {:deps org.clojure/tools.reader {:mvn/version "1.1.1"}}
+      ,#+end_src
+    #+end_example
 
-   And add a ~:deps-edn~ attribute to your clojure source block, e.g.:
-   #+begin_example
-     ,#+begin_src clojure
-     ,#+begin_src clojure :deps-edn deps-edn
-     ; some clojure code
-     ,#+end_src
-   #+end_example
+    And add a ~:deps-edn~ attribute to your clojure source block, e.g.:
+    #+begin_example
+      ,#+begin_src clojure
+      ,#+begin_src clojure :deps-edn deps-edn
+      ; some clojure code
+      ,#+end_src
+    #+end_example
    
-   To start the repl invoke ~my/ob-clojure-cider-jack-in~ from the source block you want to evaluate.
+    To start the repl invoke ~my/ob-clojure-cider-jack-in~ from the source block you want to evaluate.
   
-  #+begin_src emacs-lisp
-    (defun my/ob-nix-shell-bb-command (bb-command)
-      (format "nix-shell --packages babashka --command \"%s\"" bb-command))
+   #+begin_src emacs-lisp
+     (defun my/ob-nix-shell-bb-command (bb-command)
+       (format "nix-shell --packages babashka --command \"%s\"" bb-command))
 
-    (defun ob-clojure-eval-with-bb (expanded params)
-      "Evaluate EXPANDED code block with PARAMS using babashka."
-      (unless (executable-find "bb")
-        (user-error "Babashka not installed"))
-      (let* ((stdin (let ((stdin (cdr (assq :stdin params))))
-                      (when stdin
-                        (elisp->clj
-                         (org-babel-ref-resolve stdin)))))
-             (input (cdr (assq :input params)))
-             (file (make-temp-file "ob-clojure-bb" nil nil expanded))
-             (command (concat (when stdin (format "echo %s | " (shell-quote-argument stdin)))
-                              (my/ob-nix-shell-bb-command
-                               (format "bb %s -f %s"
-                                       (cond
-                                        ((equal input "edn") "")
-                                        ((equal input "text") "-i")
-                                        (t ""))
-                                       (shell-quote-argument file)))))
-             (result (shell-command-to-string command)))
-        (string-trim result)))
+     (defun ob-clojure-eval-with-bb (expanded params)
+       "Evaluate EXPANDED code block with PARAMS using babashka."
+       (unless (executable-find "bb")
+         (user-error "Babashka not installed"))
+       (let* ((stdin (let ((stdin (cdr (assq :stdin params))))
+                       (when stdin
+                         (elisp->clj
+                          (org-babel-ref-resolve stdin)))))
+              (input (cdr (assq :input params)))
+              (file (make-temp-file "ob-clojure-bb" nil nil expanded))
+              (command (concat (when stdin (format "echo %s | " (shell-quote-argument stdin)))
+                               (my/ob-nix-shell-bb-command
+                                (format "bb %s -f %s"
+                                        (cond
+                                         ((equal input "edn") "")
+                                         ((equal input "text") "-i")
+                                         (t ""))
+                                        (shell-quote-argument file)))))
+              (result (shell-command-to-string command)))
+         (string-trim result)))
 
-    (defun my/ob-clojure-deps-block-name ()
-      (seq-let [_ _ params] (org-babel-get-src-block-info)
-        (a-get params :deps-edn)))
+     (defun my/ob-clojure-deps-block-name ()
+       (seq-let [_ _ params] (org-babel-get-src-block-info)
+         (a-get params :deps-edn)))
 
-    (defun my/ob-clojure-deps-block-body ()
-      (when-let ((block-name (my/ob-clojure-deps-block-name)))
-        (save-excursion
-          (org-babel-goto-named-src-block block-name)
-          (seq-let [_ body] (org-babel-get-src-block-info)
-            body))))
+     (defun my/ob-clojure-deps-block-body ()
+       (when-let ((block-name (my/ob-clojure-deps-block-name)))
+         (save-excursion
+           (org-babel-goto-named-src-block block-name)
+           (seq-let [_ body] (org-babel-get-src-block-info)
+             body))))
 
-    (defun my/ob-clojure-cider-jack-in-clj ()
-      (interactive)
-      (when-let ((deps-edn (my/ob-clojure-deps-block-body)))
-        (write-region deps-edn nil (concat default-directory "deps.edn")))
-      (let ((cider-allow-jack-in-without-project t))
-        (cider-jack-in-clj '())))
+     (defun my/ob-clojure-cider-jack-in-clj ()
+       (interactive)
+       (when-let ((deps-edn (my/ob-clojure-deps-block-body)))
+         (write-region deps-edn nil (concat default-directory "deps.edn")))
+       (let ((cider-allow-jack-in-without-project t))
+         (cider-jack-in-clj '())))
 
-    (defun org-babel-execute:clojure (body params)
-      "Execute a block of Clojure code with Babel."
-      (let* ((backend (if-let ((backend-s (a-get params :backend)))
-                          (intern backend-s)
-                        org-babel-clojure-backend))
-             (expanded (org-babel-expand-body:clojure body params))
-             (result-params (cdr (assq :result-params params)))
-             result)
-        (unless backend
-          (user-error "You need to customize org-babel-clojure-backend"))
-        (setq result
-              (cond
-               ((eq backend 'inf-clojure)
-                (ob-clojure-eval-with-inf-clojure expanded params))
-               ((eq backend 'cider)
-                (progn
-                  (when (not (cider-current-repl))
-                    (error "no repl connected, run my/ob-clojure-cider-jack-in-clj"))
-                  (ob-clojure-eval-with-cider expanded params)))
-               ((eq backend 'slime)
-                (ob-clojure-eval-with-slime expanded params))
-               ((eq backend 'babashka)
-                (ob-clojure-eval-with-bb expanded params))))
-        (org-babel-result-cond result-params
-          result
-          (condition-case nil (org-babel-script-escape result)
-            (error result)))))
-  #+end_src
-* Org Mode + Clojure Portal
-  Function that shows the result of executing a org babel source block in [[https://github.com/djblue/portal][Portal.]]
+     (defun org-babel-execute:clojure (body params)
+       "Execute a block of Clojure code with Babel."
+       (let* ((backend (if-let ((backend-s (a-get params :backend)))
+                           (intern backend-s)
+                         org-babel-clojure-backend))
+              (expanded (org-babel-expand-body:clojure body params))
+              (result-params (cdr (assq :result-params params)))
+              result)
+         (unless backend
+           (user-error "You need to customize org-babel-clojure-backend"))
+         (setq result
+               (cond
+                ((eq backend 'inf-clojure)
+                 (ob-clojure-eval-with-inf-clojure expanded params))
+                ((eq backend 'cider)
+                 (progn
+                   (when (not (cider-current-repl))
+                     (error "no repl connected, run my/ob-clojure-cider-jack-in-clj"))
+                   (ob-clojure-eval-with-cider expanded params)))
+                ((eq backend 'slime)
+                 (ob-clojure-eval-with-slime expanded params))
+                ((eq backend 'babashka)
+                 (ob-clojure-eval-with-bb expanded params))))
+         (org-babel-result-cond result-params
+           result
+           (condition-case nil (org-babel-script-escape result)
+             (error result)))))
+   #+end_src
+** Org Mode + Clojure Portal
+   Function that shows the result of executing a org babel source block in [[https://github.com/djblue/portal][Portal.]]
   
-  Note: when using ~:results value~, org-babel will convert data to its table format and this command will convert back to edn which might change the original data structures. To get the exact result, use ~:results output~, which will send the result as a string to portal. Then you can ask portal to read it as edn.
-  #+begin_src emacs-lisp
-    (setq my/portal-nrepl-port 1900)
+   Note: when using ~:results value~, org-babel will convert data to its table format and this command will convert back to edn which might change the original data structures. To get the exact result, use ~:results output~, which will send the result as a string to portal. Then you can ask portal to read it as edn.
+   #+begin_src emacs-lisp
+     (setq my/portal-nrepl-port 1900)
 
-    (defconst my/portal-classpath-command
-      "nix-shell --packages clojure --command \"clojure -Spath -Sdeps '{:deps {djblue/portal {:mvn/version \\\"0.8.0\\\"}}}'\"")
+     (defconst my/portal-classpath-command
+       "nix-shell --packages clojure --command \"clojure -Spath -Sdeps '{:deps {djblue/portal {:mvn/version \\\"0.8.0\\\"}}}'\"")
 
-    (defun my/portal-nrepl-port-open-p ()
-      (condition-case nil
-          (progn
-            (make-network-process :name "nrepl-portal" :family 'ipv4 :host "localhost" :service my/portal-nrepl-port)
-            (delete-process "nrepl-portal")
-            t)
-        (error nil)))
+     (defun my/portal-nrepl-port-open-p ()
+       (condition-case nil
+           (progn
+             (make-network-process :name "nrepl-portal" :family 'ipv4 :host "localhost" :service my/portal-nrepl-port)
+             (delete-process "nrepl-portal")
+             t)
+         (error nil)))
 
-    (defun my/wait-for-portal-nrepl-port ()
-      (let ((number-of-tries 0))
-        (while (not (my/portal-nrepl-port-open-p))
-          (when (> number-of-tries 20)
-            (error "timeout waiting for port"))
-          (setq number-of-tries (+ number-of-tries 1))
-          (sleep-for 0.2))))
+     (defun my/wait-for-portal-nrepl-port ()
+       (let ((number-of-tries 0))
+         (while (not (my/portal-nrepl-port-open-p))
+           (when (> number-of-tries 20)
+             (error "timeout waiting for port"))
+           (setq number-of-tries (+ number-of-tries 1))
+           (sleep-for 0.2))))
 
-    (defun my/start-portal ()
-      (when (not (my/portal-nrepl-port-open-p))
-        (setq my/portal-process
-              (start-process-shell-command "clojure-portal"
-                                           "clojure-portal-output"
-                                           (my/ob-nix-shell-bb-command
-                                            (format "bb -cp $(%s) --nrepl-server %s"
-                                                    my/portal-classpath-command
-                                                    my/portal-nrepl-port))))
-        (my/wait-for-portal-nrepl-port)
-        (setq my/portal-nrepl-connection
-              (cider-connect `(:host "localhost" :port ,my/portal-nrepl-port)))))
+     (defun my/start-portal ()
+       (when (not (my/portal-nrepl-port-open-p))
+         (setq my/portal-process
+               (start-process-shell-command "clojure-portal"
+                                            "clojure-portal-output"
+                                            (my/ob-nix-shell-bb-command
+                                             (format "bb -cp $(%s) --nrepl-server %s"
+                                                     my/portal-classpath-command
+                                                     my/portal-nrepl-port))))
+         (my/wait-for-portal-nrepl-port)
+         (setq my/portal-nrepl-connection
+               (cider-connect `(:host "localhost" :port ,my/portal-nrepl-port)))))
 
-    (defun my/eval-in-portal (code)
-      (nrepl-send-sync-request
-       `("op" "eval" "code" ,code)
-       my/portal-nrepl-connection))
+     (defun my/eval-in-portal (code)
+       (nrepl-send-sync-request
+        `("op" "eval" "code" ,code)
+        my/portal-nrepl-connection))
 
-    (defun my/start-portal-instance ()
-      (my/start-portal)
-      (my/eval-in-portal
-       "(require '[portal.api :as p])
-        (defonce portal (atom nil))
-        (reset! portal (p/open @portal))"))
+     (defun my/start-portal-instance ()
+       (my/start-portal)
+       (my/eval-in-portal
+        "(require '[portal.api :as p])
+         (defonce portal (atom nil))
+         (reset! portal (p/open @portal))"))
 
-    (defun my/parseedn-print-str (data)
-      ; deactivates alist conversion in parseedn, since sometimes it might produce
-      ; a map with repeated keys, e.g: (parseedn-print-str '(("a" 1)("a" 2))) => "{\"a\" (1), \"a\" (1)}"
-      (cl-letf (((symbol-function 'parseedn-alist-p) (lambda (x) nil)))
-        (parseedn-print-str data)))
+     (defun my/parseedn-print-str (data)
+       ; deactivates alist conversion in parseedn, since sometimes it might produce
+       ; a map with repeated keys, e.g: (parseedn-print-str '(("a" 1)("a" 2))) => "{\"a\" (1), \"a\" (1)}"
+       (cl-letf (((symbol-function 'parseedn-alist-p) (lambda (x) nil)))
+         (parseedn-print-str data)))
 
-    (defun my/send-to-portal (data)
-      (my/start-portal-instance)
-      (my/eval-in-portal
-       (format "(reset! @portal '%s)" (my/parseedn-print-str data))))
+     (defun my/send-to-portal (data)
+       (my/start-portal-instance)
+       (my/eval-in-portal
+        (format "(reset! @portal '%s)" (my/parseedn-print-str data))))
 
-    (defun my/org-babel-execute-src-block-to-clojure-portal ()
-      (interactive)
-      (let* ((result (org-babel-execute-src-block)))
-        (my/send-to-portal result)))
-  #+end_src
-* Microk8s Org-babel
-  #+begin_src emacs-lisp
-    ;; possibly require modes required for your language
-    (define-derived-mode kubectl-mode yaml-mode "kubectl"
-      "Major mode for editing kubectl templates."
-      )
-
-
-
-    ;; optionally define a file extension for this language
-    (add-to-list 'org-babel-tangle-lang-exts '("kubectl" . "yaml"))
-
-    ;; optionally declare default header arguments for this language
-    (defvar org-babel-default-header-args:kubectl '((:action . "apply")(:context . nil)))
-
-    ;; This function expands the body of a source code block by doing
-    ;; things like prepending argument definitions to the body, it should
-    ;; be called by the `org-babel-execute:kubectl' function below.
-    (defun org-babel-expand-body:kubectl (body params &optional processed-params)
-      "Expand BODY according to PARAMS, return the expanded body."
-      ;(require 'inf-kubectl) : TODO check if needed
-      body ; TODO translate params to yaml variables
-    )
-
-    ;; This is the main function which is called to evaluate a code
-    ;; block.
-    ;;
-    ;; This function will evaluate the body of the source code and
-    ;; return the results as emacs-lisp depending on the value of the
-    ;; :results header argument
-    ;; - output means that the output to STDOUT will be captured and
-    ;;   returned
-    ;; - value means that the value of the last statement in the
-    ;;   source code block will be returned
-    ;;
-    ;; The most common first step in this function is the expansion of the
-    ;; PARAMS argument using `org-babel-process-params'.
-    ;;
-    ;; Please feel free to not implement options which aren't appropriate
-    ;; for your language (e.g. not all languages support interactive
-    ;; "session" evaluation).  Also you are free to define any new header
-    ;; arguments which you feel may be useful -- all header arguments
-    ;; specified by the user will be available in the PARAMS variable.
-    (defun org-babel-execute:kubectl (body params)
-      "Execute a block of kubectl code with org-babel.
-    This function is called by `org-babel-execute-src-block'"
-      (let* ((vars (org-babel--get-vars params))
-	     (action (if (assoc :action params) (cdr (assoc :action params)) "apply")))
-	(message "executing kubectl source code block")
-	(org-babel-eval-kubectl (concat "microk8s kubectl " action " -f" ) body)
-	)
-      ;; when forming a shell command, or a fragment of code in some
-      ;; other language, please preprocess any file names involved with
-      ;; the function `org-babel-process-file-name'. (See the way that
-      ;; function is used in the language files)
-      )
+     (defun my/org-babel-execute-src-block-to-clojure-portal ()
+       (interactive)
+       (let* ((result (org-babel-execute-src-block)))
+         (my/send-to-portal result)))
+   #+end_src
+** Microk8s Org-babel
+   #+begin_src emacs-lisp
+     ;; possibly require modes required for your language
+     (define-derived-mode kubectl-mode yaml-mode "kubectl"
+       "Major mode for editing kubectl templates."
+       )
 
 
-    (defun org-babel-eval-kubectl (cmd yaml)
-      "Run CMD on BODY.
-    If CMD succeeds then return its results, otherwise display
-    STDERR with `org-babel-eval-error-notify'."
-      (let ((err-buff (get-buffer-create " *Org-Babel Error*"))
-	    (yaml-file (org-babel-temp-file "ob-kubectl-yaml-"))
-	    (output-file (org-babel-temp-file "ob-kubectl-out-"))
-	    exit-code)
-	(with-temp-file yaml-file (insert yaml))
-	(with-current-buffer err-buff (erase-buffer))
-	(setq exit-code
-	      (shell-command (concat cmd " " yaml-file) output-file err-buff)
-	      )
-	  (if (or (not (numberp exit-code)) (> exit-code 0))
-	      (progn
-		(with-current-buffer err-buff
-		  (org-babel-eval-error-notify exit-code (buffer-string)))
-		(save-excursion
-		  (when (get-buffer org-babel-error-buffer-name)
-		    (with-current-buffer org-babel-error-buffer-name
-		      (unless (derived-mode-p 'compilation-mode)
-			(compilation-mode))
-		      ;; Compilation-mode enforces read-only, but Babel expects the buffer modifiable.
-		      (setq buffer-read-only nil))))
-		nil)
-	    ; return the contents of output file
-	    (with-current-buffer output-file (buffer-string)))))
 
-    (add-to-list 'org-babel-load-languages '(kubectl .t))
-  #+end_src
-* Racket
-  #+begin_src fundamental :tangle no :noweb-ref nix-packages
-    racket
-  #+end_src
-  #+begin_src emacs-lisp
-    (use-package racket-mode
-      :config
-      (add-hook 'racket-mode-hook #'enable-paredit-mode))
+     ;; optionally define a file extension for this language
+     (add-to-list 'org-babel-tangle-lang-exts '("kubectl" . "yaml"))
 
-    (use-package geiser)
+     ;; optionally declare default header arguments for this language
+     (defvar org-babel-default-header-args:kubectl '((:action . "apply")(:context . nil)))
 
-    (use-package ob-racket
-          :straight (ob-racket
-                     :type git
-                     :host github
-                     :branch "master"
-                     :files ("ob-racket.el")
-                     :repo "hasu/emacs-ob-racket"))
-  #+end_src
+     ;; This function expands the body of a source code block by doing
+     ;; things like prepending argument definitions to the body, it should
+     ;; be called by the `org-babel-execute:kubectl' function below.
+     (defun org-babel-expand-body:kubectl (body params &optional processed-params)
+       "Expand BODY according to PARAMS, return the expanded body."
+       ;(require 'inf-kubectl) : TODO check if needed
+       body ; TODO translate params to yaml variables
+     )
+
+     ;; This is the main function which is called to evaluate a code
+     ;; block.
+     ;;
+     ;; This function will evaluate the body of the source code and
+     ;; return the results as emacs-lisp depending on the value of the
+     ;; :results header argument
+     ;; - output means that the output to STDOUT will be captured and
+     ;;   returned
+     ;; - value means that the value of the last statement in the
+     ;;   source code block will be returned
+     ;;
+     ;; The most common first step in this function is the expansion of the
+     ;; PARAMS argument using `org-babel-process-params'.
+     ;;
+     ;; Please feel free to not implement options which aren't appropriate
+     ;; for your language (e.g. not all languages support interactive
+     ;; "session" evaluation).  Also you are free to define any new header
+     ;; arguments which you feel may be useful -- all header arguments
+     ;; specified by the user will be available in the PARAMS variable.
+     (defun org-babel-execute:kubectl (body params)
+       "Execute a block of kubectl code with org-babel.
+     This function is called by `org-babel-execute-src-block'"
+       (let* ((vars (org-babel--get-vars params))
+	      (action (if (assoc :action params) (cdr (assoc :action params)) "apply")))
+	 (message "executing kubectl source code block")
+	 (org-babel-eval-kubectl (concat "microk8s kubectl " action " -f" ) body)
+	 )
+       ;; when forming a shell command, or a fragment of code in some
+       ;; other language, please preprocess any file names involved with
+       ;; the function `org-babel-process-file-name'. (See the way that
+       ;; function is used in the language files)
+       )
+
+
+     (defun org-babel-eval-kubectl (cmd yaml)
+       "Run CMD on BODY.
+     If CMD succeeds then return its results, otherwise display
+     STDERR with `org-babel-eval-error-notify'."
+       (let ((err-buff (get-buffer-create " *Org-Babel Error*"))
+	     (yaml-file (org-babel-temp-file "ob-kubectl-yaml-"))
+	     (output-file (org-babel-temp-file "ob-kubectl-out-"))
+	     exit-code)
+	 (with-temp-file yaml-file (insert yaml))
+	 (with-current-buffer err-buff (erase-buffer))
+	 (setq exit-code
+	       (shell-command (concat cmd " " yaml-file) output-file err-buff)
+	       )
+	   (if (or (not (numberp exit-code)) (> exit-code 0))
+	       (progn
+		 (with-current-buffer err-buff
+		   (org-babel-eval-error-notify exit-code (buffer-string)))
+		 (save-excursion
+		   (when (get-buffer org-babel-error-buffer-name)
+		     (with-current-buffer org-babel-error-buffer-name
+		       (unless (derived-mode-p 'compilation-mode)
+			 (compilation-mode))
+		       ;; Compilation-mode enforces read-only, but Babel expects the buffer modifiable.
+		       (setq buffer-read-only nil))))
+		 nil)
+	     ; return the contents of output file
+	     (with-current-buffer output-file (buffer-string)))))
+
+     (add-to-list 'org-babel-load-languages '(kubectl .t))
+   #+end_src
