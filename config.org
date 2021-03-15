@@ -179,8 +179,8 @@
          "ee" :eval/last-sexp
          "ep" :eval/last-sexp-pprint
          "et" :eval/to-portal
-         "t" :run-test/focused
-         "b" :run-test/buffer
+         "tt" :run-test/focused
+         "tn" :run-test/buffer
          "s" '(:ignore t :which-key "repl")
          "sq" :repl/quit
          "sx" :repl/refresh
@@ -288,7 +288,7 @@
       "k" '(:ignore t :which-key "paredit")
       "ks" 'paredit-forward-slurp-sexp
       "kb" 'paredit-forward-barf-sexp
-      "kd" 'paredit-kill
+      "kd" 'kill-sexp
       "kr" 'paredit-raise-sexp
       "kp" 'paredit-splice-sexp)
   #+end_src
@@ -375,7 +375,7 @@
       "p" '(:ignore t :which-key "project")
       "pf" 'projectile-find-file
       "pp" 'projectile-switch-project
-      "'" 'projectile-run-shell
+      "p'" 'projectile-run-shell
       "/" 'projectile-ag)
   #+end_src
 * Yasnippet
