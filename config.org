@@ -345,6 +345,7 @@
      .cpcache
      .clj-kondo
      .eastwood
+     *.repl
    #+end_src
 ** Magit
    Work with git with a little bit of [[https://magit.vc/][magit]]
