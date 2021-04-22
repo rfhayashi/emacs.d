@@ -697,24 +697,21 @@
    #+begin_src emacs-lisp
      (use-package racket-mode
        :config
-       (add-hook 'racket-mode-hook #'enable-paredit-mode))
-
-     (use-package geiser
-       :config
+       (add-hook 'racket-mode-hook #'enable-paredit-mode)
        (my/leader-key-commands
         racket-mode
         :eval/top-level-form 'racket-send-definition
-        :eval/last-sexp 'geiser-eval-last-sexp
+        :eval/last-sexp 'racket-eval-last-sexp
         :eval/last-sexp-pprint 'geiser-eval-last-sexp-and-print
-        :repl/start 'run-racket))
+        :repl/start 'racket-run))
 
      (use-package ob-racket
-           :straight (ob-racket
-                      :type git
-                      :host github
-                      :branch "master"
-                      :files ("ob-racket.el")
-                      :repo "hasu/emacs-ob-racket"))
+       :straight (ob-racket
+                  :type git
+                  :host github
+                  :branch "master"
+                  :files ("ob-racket.el")
+                  :repo "hasu/emacs-ob-racket"))
 
 
    #+end_src
@@ -816,8 +813,6 @@
 
      (defun ob-clojure-eval-with-bb (expanded params)
        "Evaluate EXPANDED code block with PARAMS using babashka."
-       (unless (executable-find "bb")
-         (user-error "Babashka not installed"))
        (let* ((stdin (let ((stdin (cdr (assq :stdin params))))
                        (when stdin
                          (elisp->clj
