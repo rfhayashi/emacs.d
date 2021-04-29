@@ -179,6 +179,7 @@
          "ee" :eval/last-sexp
          "ep" :eval/last-sexp-pprint
          "et" :eval/to-portal
+         "t" '(:ignore t :which-key "test")
          "tt" :run-test/focused
          "tn" :run-test/buffer
          "s" '(:ignore t :which-key "repl")
@@ -664,8 +665,8 @@
         :eval/top-level-form 'cider-eval-defun-at-point
         :eval/last-sexp 'cider-eval-last-sexp
         :eval/last-sexp-pprint 'cider-eval-print-last-sexp
-        :run-test/focused 'cider-test-run-test
-        :run-test/buffer 'cider-test-run-ns-tests
+        :run-test/focused 'my/cider-test-run-focused-test
+        :run-test/buffer 'my/cider-test-run-ns-tests
         :repl/quit 'cider-quit
         :repl/refresh 'cider-refresh
         :repl/start 'cider-jack-in
