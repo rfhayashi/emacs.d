@@ -353,8 +353,6 @@
    #+begin_src emacs-lisp
      (use-package magit)
 
-     (use-package evil-magit)
-
      (my/space-key-def
        "gs" 'magit-status)
   #+end_src
@@ -741,7 +739,7 @@
        :eval/to-portal 'my/org-babel-execute-src-block-to-clojure-portal
        :jump/definition 'org-open-at-point
        :repl/start 'my/ob-clojure-cider-jack-in-clj))
-
+    
     (use-package evil-org
       :after org
       :config
@@ -750,31 +748,33 @@
                 (lambda ()
                   (evil-org-set-key-theme)))
       (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading)))
-
+    
     (defconst rfh/org-roam-dir "~/dev/org-roam")
-
+    
     (use-package org-roam
+      :init
+      (setq org-roam-v2-ack t)
       :config
       (setq org-roam-directory rfh/org-roam-dir)
       (setq org-roam-completion-system 'ivy)
       (add-hook 'after-init-hook 'org-roam-mode)
       (my/space-key-def
         "r" '(:ignore t :which-key "roam")
-        "rf" 'org-roam-find-file
-        "rr" 'org-roam-dailies-find-today
-        "rt" 'org-roam-dailies-find-tomorrow))
-
+        "rf" 'org-roam-node-find
+        "rr" 'org-roam-dailies-goto-date
+        "rt" 'org-roam-dailies-goto-tomorrow))
+    
     (use-package company-org-roam
       :after company
       :straight (:host github :repo "org-roam/company-org-roam")
       :config
       (push 'company-org-roam company-backends))
-
+    
     (defun my/org-mode-visual-fill ()
       (setq visual-fill-column-width 80)
       (visual-fill-column-mode 1)
       (visual-line-mode 1))
-
+    
     (use-package visual-fill-column
       :hook (org-mode . my/org-mode-visual-fill))
   #+end_src
