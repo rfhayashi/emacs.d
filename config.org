@@ -449,47 +449,9 @@
     #+begin_src fundamental :noweb-ref nix-packages :tangle no
       clojure-lsp
     #+end_src
-*** Babashka installation
-    Create overlay to install version 0.2.6 of babashka. I have only managed to make portal work with this version.
-    #+begin_src nix :tangle ~/.config/nixpkgs/overlays/babashka.nix
-      self: super:
-      {
-        babashka = super.babashka.overrideAttrs (old: rec {
-          version = "0.2.6";
-          reflectionJson = super.fetchurl {
-            name = "reflection.json";
-            url = "https://github.com/borkdude/${old.pname}/releases/download/v${version}/${old.pname}-${version}-reflection.json";
-            sha256 = "1c7f0z1hi0vcfz532r3fhr4c64jjqppf94idpa1jziz1dljkwk85";
-          };
-          src = super.fetchurl {
-            url = "https://github.com/borkdude/${old.pname}/releases/download/v${version}/${old.pname}-${version}-standalone.jar";
-            sha256 = "1anpslb925q8b3yy6ljrygq7ax8laalbzrk0rfy4y8aaillfswxy";
-          };
-          buildPhase = ''
-            native-image \
-              -jar ${src} \
-              -H:Name=bb \
-              ${super.lib.optionalString super.stdenv.isDarwin ''-H:-CheckToolchain''} \
-              -H:+ReportExceptionStackTraces \
-              -J-Dclojure.spec.skip-macros=true \
-              -J-Dclojure.compiler.direct-linking=true \
-              "-H:IncludeResources=BABASHKA_VERSION" \
-              "-H:IncludeResources=SCI_VERSION" \
-              -H:ReflectionConfigurationFiles=${reflectionJson} \
-              --initialize-at-build-time \
-              -H:Log=registerResource: \
-              -H:EnableURLProtocols=http,https,jar \
-              --enable-all-security-services \
-              -H:+JNI \
-              --verbose \
-              --no-fallback \
-              --no-server \
-              --report-unsupported-elements-at-runtime \
-              "--initialize-at-run-time=org.postgresql.sspi.SSPIClient" \
-              "-J-Xmx4500m"
-          '';
-        });
-      }
+*** Babashka Instalation
+    #+begin_src fundamental :noweb-ref nix-packages :tangle no
+      babashka
     #+end_src
 *** Dotfiles
    #+begin_src clojure :tangle ~/.clojure/injections/deps.edn
