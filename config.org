@@ -568,7 +568,7 @@
                   :main-opts ["-m" "depot.outdated.main"]}
 
        :oz {:extra-deps {metasoarous/oz {:mvn/version "1.6.0-alpha6"}}}
-       :portal {:extra-deps {djblue/portal {:mvn/version "0.8.0"}}}
+       :portal {:extra-deps {djblue/portal {:mvn/version "0.13.0"}}}
        :injections {:extra-deps {my/tap {:local/root "<<homedir()>>/.clojure/injections"}}}}}
    #+end_src
 
@@ -585,7 +585,7 @@
    #+begin_src clojure :tangle ~/.lein/profiles.clj
      {:user
       {:dependencies        [[my/tap "0.0.1-SNAPSHOT"]
-                             [djblue/portal "0.8.0"]]
+                             [djblue/portal "0.13.0"]]
        :injections          [(require 'tap)
                              (require 'portal)
                              (portal.api/tap)]}}
@@ -656,7 +656,7 @@
        (setq clojure-toplevel-inside-comment-form t)
        (setq cider-clojure-cli-global-options "-A:portal -A:injections")
        ; make sure we're using a http-kit version that is compatible with portal
-       (cider-add-to-alist 'cider-jack-in-dependencies "http-kit" "2.5.0")
+       (cider-add-to-alist 'cider-jack-in-dependencies "http-kit" "2.5.3")
        ;(my/setup-matcher-combinators)
        (advice-add 'cider--update-jack-in-cmd :around #'my/cider--update-jack-in-cmd)
        (my/leader-key-commands
