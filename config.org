@@ -558,28 +558,28 @@
        (interactive)
        (cider-load-buffer)
        (cider-test-run-test))
-
+     
      (defun my/cider-test-run-ns-tests ()
        "Run namespace test"
        (interactive)
        (cider-load-buffer)
        (cider-test-run-ns-tests nil))
-
+     
      (defun my/portal-cider-inspect-last-result ()
        (interactive)
        (let ((repl (cider-current-repl)))
          (nrepl-send-sync-request `("op" "eval" "code" "(portal/send *1)") repl)))
-
+     
      (defun my/portal-cider-open ()
        (interactive)
        (let ((repl (cider-current-repl)))
          (nrepl-send-sync-request `("op" "eval" "code" "(portal/instance)") repl)))
-
+     
      (defun my/clojure-project-nix-packages (project-type)
        (pcase project-type
          ('clojure-cli "clojure")
          ('lein "leiningen")))
-
+     
      (defun my/cider--update-jack-in-cmd (orig-fun &rest args)
        (cl-letf (((symbol-function 'cider-jack-in-resolve-command) (lambda (project-type)(cider-jack-in-command project-type))))
          (let* ((params (apply orig-fun args))
@@ -587,17 +587,17 @@
                 (project-type (cider-project-type (plist-get params :project-dir)))
                 (packages (my/clojure-project-nix-packages project-type)))
            (plist-put params :jack-in-cmd (format "nix-shell --packages %s --command %s" packages cmd)))))
-
+     
      (use-package clojure-mode
        :config
        (add-hook 'clojure-mode-hook #'enable-paredit-mode))
-
+     
      (defun my/setup-matcher-combinators ()
        (cider-add-to-alist 'cider-jack-in-lein-plugins "cider/cider-nrepl" "0.25.5")
-
+     
        (advice-add 'cider-ansi-color-string-p :override
                    (lambda (string) (string-match "\\[" string)))
-
+     
        (advice-add 'cider-font-lock-as
                    :before
                    (lambda (&rest r)
@@ -606,7 +606,7 @@
                    :after
                    (lambda (&rest r)
                      (advice-remove 'substring-no-properties #'identity))))
-
+     
      (use-package cider
        :config
        (setq cider-save-file-on-load t)
@@ -636,7 +636,7 @@
         :refactor/rename 'lsp-rename)
        (add-hook 'cider-repl-mode-hook #'cider-company-enable-fuzzy-completion)
        (add-hook 'cider-mode-hook #'cider-company-enable-fuzzy-completion))
-
+     
      (use-package lsp-mode
        :config
        (dolist (m '(clojure-mode
@@ -645,10 +645,11 @@
                     clojurex-mode))
          (add-to-list 'lsp-language-id-configuration `(,m . "clojure")))
        (setq lsp-enable-indentation nil)
+       (setq lsp-lens-enable t)
        (add-hook 'clojure-mode-hook #'lsp)
        (add-hook 'clojurec-mode-hook #'lsp)
        (add-hook 'clojurescript-mode-hook #'lsp))
-
+     
      (use-package clj-refactor
        :config
        (clj-refactor-mode 1))
