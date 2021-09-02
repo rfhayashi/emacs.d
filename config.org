@@ -299,10 +299,10 @@
     (use-package counsel
       :custom
       (ivy-initial-inputs-alist nil)
-      (ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
       :config
       (ivy-mode 1)
       (counsel-mode 1)
+      (setq ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
       :bind (:map ivy-minibuffer-map
              ("C-j" . ivy-next-line)
              ("C-k" . ivy-previous-line)
@@ -310,12 +310,12 @@
              ("C-k" . ivy-previous-line)
              :map ivy-reverse-i-search-map
              ("C-k" . ivy-previous-line)))
-
+    
     (use-package swiper
       :bind
       (:map evil-normal-state-map
             ("/" . swiper)))
-
+    
     (use-package ivy-rich
       :init
       (ivy-rich-mode 1))
@@ -592,20 +592,29 @@
        :config
        (add-hook 'clojure-mode-hook #'enable-paredit-mode))
      
-     (defun my/setup-matcher-combinators ()
-       (cider-add-to-alist 'cider-jack-in-lein-plugins "cider/cider-nrepl" "0.25.5")
+     (defun my/cider-ansi-color-string-p (value)
+       "Check for extra ANSI chars on VALUE."
+         (or (string-match "^\\[" value)
+             (string-match "\u001B\\[" value)))
      
-       (advice-add 'cider-ansi-color-string-p :override
-                   (lambda (string) (string-match "\\[" string)))
-     
-       (advice-add 'cider-font-lock-as
-                   :before
-                   (lambda (&rest r)
-                     (advice-add 'substring-no-properties :override #'identity)))
-       (advice-add 'cider-font-lock-as
-                   :after
-                   (lambda (&rest r)
-                     (advice-remove 'substring-no-properties #'identity))))
+     (defun my/cider-font-lock-as (mode string)
+       "Use MODE to font-lock the STRING.
+          Copied from cider-util.el, it does the same but doesn't remove
+          string properties"
+         (let ((string (if (cider-ansi-color-string-p string)
+                           (ansi-color-apply string)
+                         string)))
+           (if (or (null cider-font-lock-max-length)
+                   (< (length string) cider-font-lock-max-length))
+               (with-current-buffer (cider--make-buffer-for-mode mode)
+                 (erase-buffer)
+                 (insert string)
+                 ;; don't try to font-lock unbalanced Clojure code
+                 (when (eq mode 'clojure-mode)
+                   (check-parens))
+                 (font-lock-fontify-region (point-min) (point-max))
+                 (buffer-string))
+             string)))
      
      (use-package cider
        :config
@@ -617,8 +626,9 @@
        (setq cider-clojure-cli-global-options "-A:portal -A:injections")
        ; make sure we're using a http-kit version that is compatible with portal
        (cider-add-to-alist 'cider-jack-in-dependencies "http-kit" "2.5.3")
-       ;(my/setup-matcher-combinators)
        (advice-add 'cider--update-jack-in-cmd :around #'my/cider--update-jack-in-cmd)
+       (advice-add 'cider-ansi-color-string-p :override #'my/cider-ansi-color-string-p)
+       (advice-add 'cider-font-lock-as :override #'my/cider-font-lock-as)
        (my/leader-key-commands
         clojure-mode
         :eval/buffer 'cider-eval-buffer
@@ -687,6 +697,7 @@
       (require 'ob-shell)
       (require 'ob-clojure)
       (setq org-ellipsis " ▾")
+      (setq org-src-window-setup 'split-window-right)
       (org-babel-lob-ingest (expand-file-name "babel.org" user-emacs-directory))
       (require 'org-tempo)
       (dolist (el '(("el" . "src emacs-lisp")
@@ -915,15 +926,15 @@
      (define-derived-mode kubectl-mode yaml-mode "kubectl"
        "Major mode for editing kubectl templates."
        )
-
-
-
+     
+     
+     
      ;; optionally define a file extension for this language
      (add-to-list 'org-babel-tangle-lang-exts '("kubectl" . "yaml"))
-
+     
      ;; optionally declare default header arguments for this language
      (defvar org-babel-default-header-args:kubectl '((:action . "apply")(:context . nil)))
-
+     
      ;; This function expands the body of a source code block by doing
      ;; things like prepending argument definitions to the body, it should
      ;; be called by the `org-babel-execute:kubectl' function below.
@@ -932,7 +943,7 @@
        ;(require 'inf-kubectl) : TODO check if needed
        body ; TODO translate params to yaml variables
      )
-
+     
      ;; This is the main function which is called to evaluate a code
      ;; block.
      ;;
@@ -956,44 +967,44 @@
        "Execute a block of kubectl code with org-babel.
      This function is called by `org-babel-execute-src-block'"
        (let* ((vars (org-babel--get-vars params))
-	      (action (if (assoc :action params) (cdr (assoc :action params)) "apply")))
-	 (message "executing kubectl source code block")
-	 (org-babel-eval-kubectl (concat "microk8s kubectl " action " -f" ) body)
-	 )
+              (action (if (assoc :action params) (cdr (assoc :action params)) "apply")))
+         (message "executing kubectl source code block")
+         (org-babel-eval-kubectl (concat "kubectl " action " -f" ) body)
+         )
        ;; when forming a shell command, or a fragment of code in some
        ;; other language, please preprocess any file names involved with
        ;; the function `org-babel-process-file-name'. (See the way that
        ;; function is used in the language files)
        )
-
-
+     
+     
      (defun org-babel-eval-kubectl (cmd yaml)
        "Run CMD on BODY.
      If CMD succeeds then return its results, otherwise display
      STDERR with `org-babel-eval-error-notify'."
        (let ((err-buff (get-buffer-create " *Org-Babel Error*"))
-	     (yaml-file (org-babel-temp-file "ob-kubectl-yaml-"))
-	     (output-file (org-babel-temp-file "ob-kubectl-out-"))
-	     exit-code)
-	 (with-temp-file yaml-file (insert yaml))
-	 (with-current-buffer err-buff (erase-buffer))
-	 (setq exit-code
-	       (shell-command (concat cmd " " yaml-file) output-file err-buff)
-	       )
-	   (if (or (not (numberp exit-code)) (> exit-code 0))
-	       (progn
-		 (with-current-buffer err-buff
-		   (org-babel-eval-error-notify exit-code (buffer-string)))
-		 (save-excursion
-		   (when (get-buffer org-babel-error-buffer-name)
-		     (with-current-buffer org-babel-error-buffer-name
-		       (unless (derived-mode-p 'compilation-mode)
-			 (compilation-mode))
-		       ;; Compilation-mode enforces read-only, but Babel expects the buffer modifiable.
-		       (setq buffer-read-only nil))))
-		 nil)
-	     ; return the contents of output file
-	     (with-current-buffer output-file (buffer-string)))))
-
+             (yaml-file (org-babel-temp-file "ob-kubectl-yaml-"))
+             (output-file (org-babel-temp-file "ob-kubectl-out-"))
+             exit-code)
+         (with-temp-file yaml-file (insert yaml))
+         (with-current-buffer err-buff (erase-buffer))
+         (setq exit-code
+               (shell-command (concat cmd " " yaml-file) output-file err-buff)
+               )
+           (if (or (not (numberp exit-code)) (> exit-code 0))
+               (progn
+                 (with-current-buffer err-buff
+                   (org-babel-eval-error-notify exit-code (buffer-string)))
+                 (save-excursion
+                   (when (get-buffer org-babel-error-buffer-name)
+                     (with-current-buffer org-babel-error-buffer-name
+                       (unless (derived-mode-p 'compilation-mode)
+                         (compilation-mode))
+                       ;; Compilation-mode enforces read-only, but Babel expects the buffer modifiable.
+                       (setq buffer-read-only nil))))
+                 nil)
+             ; return the contents of output file
+             (with-current-buffer output-file (buffer-string)))))
+     
      (add-to-list 'org-babel-load-languages '(kubectl .t))
    #+end_src
