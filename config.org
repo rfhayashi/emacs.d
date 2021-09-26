@@ -460,20 +460,21 @@
 
    #+begin_src clojure :tangle ~/.clojure/injections/src/portal.clj
      (ns portal
+       (:refer-clojure :exclude [send])
        (:require [portal.api :as portal]))
-
+     
      (defonce portal* (atom nil))
-
+     
      (defn instance []
        (reset! portal* (portal/open @portal*))
        @portal*)
-
+     
      (defn send [v]
        (reset! (instance) v))
-
+     
      (defn fetch []
        @(instance))
-
+     
    #+end_src
 
    #+begin_src clojure :tangle ~/.clojure/injections/src/tap.clj
