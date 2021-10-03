@@ -690,6 +690,16 @@
 
 
    #+end_src
+** Terraform
+*** Terraform instalation
+    #+begin_src fundamental :noweb-ref nix-packages :tangle no
+      terraform
+      terraform-lsp
+    #+end_src
+*** Terraform mode
+    #+begin_src emacs-lisp
+      (use-package terraform-mode)
+    #+end_src
 * Org mode
 ** Main
   My [[https://orgmode.org/][org mode]] and [[https://github.com/org-roam/org-roam][org roam]] setup.
