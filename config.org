@@ -472,6 +472,11 @@
      (defn send [v]
        (reset! (instance) v))
      
+     (defn mkdown [v]
+       (with-meta
+         [:portal.viewer/markdown v]
+         {:portal.viewer/default :portal.viewer/hiccup}))
+     
      (defn fetch []
        @(instance))
      
@@ -618,7 +623,7 @@
        :config
        (setq cider-save-file-on-load t)
        (setq cider-repl-pop-to-buffer-on-connect nil)
-       (setq cider-test-defining-forms '("deftest" "defspec" "defflow"))
+       (setq cider-test-defining-forms '("deftest" "defspec" "defflow" "defflow-with-context"))
        (setq org-babel-clojure-backend 'cider)
        (setq clojure-toplevel-inside-comment-form t)
        (setq cider-clojure-cli-global-options "-A:portal -A:injections")
@@ -697,6 +702,10 @@
     #+begin_src emacs-lisp
       (use-package terraform-mode)
     #+end_src
+** Csharp
+#+begin_src emacs-lisp
+  (use-package csharp-mode)
+#+end_src
 * Org mode
 ** Main
   My [[https://orgmode.org/][org mode]] and [[https://github.com/org-roam/org-roam][org roam]] setup.
@@ -980,7 +989,7 @@
        (let* ((vars (org-babel--get-vars params))
               (action (if (assoc :action params) (cdr (assoc :action params)) "apply")))
          (message "executing kubectl source code block")
-         (org-babel-eval-kubectl (concat "kubectl " action " -f" ) body)
+         (org-babel-eval-kubectl (concat "microk8s kubectl " action " -f" ) body)
          )
        ;; when forming a shell command, or a fragment of code in some
        ;; other language, please preprocess any file names involved with
