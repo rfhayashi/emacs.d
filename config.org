@@ -151,6 +151,13 @@
        "f" '(:ignore t :which-key "file")
        "ff" 'find-file)
    #+end_src
+** Font size
+   #+begin_src emacs-lisp
+     (my/space-key-def
+       "t" '(:ignore t :which-key "text")
+       "t+" 'text-scale-increase
+       "t-" 'text-scale-decrease)
+   #+end_src
 ** Windows
    #+begin_src emacs-lisp
      (my/space-key-def
