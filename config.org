@@ -503,7 +503,7 @@
                   :main-opts ["-m" "depot.outdated.main"]}
      
        :oz {:extra-deps {metasoarous/oz {:mvn/version "1.6.0-alpha6"}}}
-       :portal {:extra-deps {djblue/portal {:mvn/version "0.17.0"}}}
+       :portal {:extra-deps {djblue/portal {:mvn/version "0.24.0"}}}
        :injections {:extra-deps {my/tap {:local/root "<<homedir()>>/.clojure/injections"}}}}}
    #+end_src
 
@@ -520,7 +520,7 @@
    #+begin_src clojure :tangle ~/.lein/profiles.clj
      {:user
       {:dependencies        [[my/tap "0.0.1-SNAPSHOT"]
-                             [djblue/portal "0.17.0"]]
+                             [djblue/portal "0.24.0"]]
        :injections          [(require 'tap)
                              (require 'portal)
                              (portal.api/tap)]}}
@@ -651,7 +651,7 @@
        :eval/to-portal 'my/org-babel-execute-src-block-to-clojure-portal
        :jump/definition 'org-open-at-point
        :repl/start 'my/ob-clojure-cider-jack-in-clj))
-    
+
     (use-package evil-org
       :after org
       :config
@@ -660,9 +660,9 @@
                 (lambda ()
                   (evil-org-set-key-theme)))
       (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading)))
-    
+
     (defconst rfh/org-roam-dir "~/dev/org-roam")
-    
+
     (use-package org-roam
       :init
       (setq org-roam-v2-ack t)
@@ -674,20 +674,19 @@
         "r" '(:ignore t :which-key "roam")
         "rf" 'org-roam-node-find
         "rr" 'org-roam-dailies-goto-date
-        "rt" 'org-roam-dailies-goto-tomorrow)
-      (org-roam-db-autosync-mode 1))
-    
+        "rt" 'org-roam-dailies-goto-tomorrow))
+
     (use-package company-org-roam
       :after company
       :straight (:host github :repo "org-roam/company-org-roam")
       :config
       (push 'company-org-roam company-backends))
-    
+
     (defun my/org-mode-visual-fill ()
       (setq visual-fill-column-width 80)
       (visual-fill-column-mode 1)
       (visual-line-mode 1))
-    
+
     (use-package visual-fill-column
       :hook (org-mode . my/org-mode-visual-fill))
   #+end_src
