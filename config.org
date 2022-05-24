@@ -533,37 +533,37 @@
        (interactive)
        (cider-load-buffer)
        (cider-test-run-test))
-     
+
      (defun my/cider-test-run-ns-tests ()
        "Run namespace test"
        (interactive)
        (cider-load-buffer)
        (cider-test-run-ns-tests nil))
-     
+
      (defun my/portal-cider-inspect-last-result ()
        (interactive)
        (let ((repl (cider-current-repl)))
          (nrepl-send-sync-request `("op" "eval" "code" "(portal/send *1)") repl)))
-     
+
      (defun my/portal-cider-open ()
        (interactive)
        (let ((repl (cider-current-repl)))
          (nrepl-send-sync-request `("op" "eval" "code" "(portal/instance)") repl)))
-     
+
      (defun my/clojure-project-nix-packages (project-type)
        (pcase project-type
          ('clojure-cli "clojure")
          ('lein "leiningen")))
-     
+
      (use-package clojure-mode
        :config
        (add-hook 'clojure-mode-hook #'enable-paredit-mode))
-     
+
      (defun my/cider-ansi-color-string-p (value)
        "Check for extra ANSI chars on VALUE."
          (or (string-match "^\\[" value)
              (string-match "\u001B\\[" value)))
-     
+
      (defun my/cider-font-lock-as (mode string)
        "Use MODE to font-lock the STRING.
           Copied from cider-util.el, it does the same but doesn't remove
@@ -579,7 +579,7 @@
                  (font-lock-fontify-region (point-min) (point-max))
                  (buffer-string))
              string)))
-     
+
      (use-package cider
        :config
        (setq cider-save-file-on-load t)
@@ -587,6 +587,7 @@
        (setq cider-test-defining-forms '("deftest" "defspec" "defflow" "defflow-with-context"))
        (setq org-babel-clojure-backend 'cider)
        (setq clojure-toplevel-inside-comment-form t)
+       (setq cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow")
        (setq cider-clojure-cli-global-options "-A:portal -A:injections")
        ; make sure we're using a http-kit version that is compatible with portal
        (cider-add-to-alist 'cider-jack-in-dependencies "http-kit/http-kit" "2.5.3")
@@ -609,7 +610,7 @@
         :refactor/rename 'lsp-rename)
        (add-hook 'cider-repl-mode-hook #'cider-company-enable-fuzzy-completion)
        (add-hook 'cider-mode-hook #'cider-company-enable-fuzzy-completion))
-     
+
      (use-package lsp-mode
        :config
        (dolist (m '(clojure-mode
@@ -622,7 +623,7 @@
        (add-hook 'clojure-mode-hook #'lsp)
        (add-hook 'clojurec-mode-hook #'lsp)
        (add-hook 'clojurescript-mode-hook #'lsp))
-     
+
      (use-package clj-refactor
        :config
        (clj-refactor-mode 1))
