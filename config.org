@@ -559,27 +559,6 @@
        :config
        (add-hook 'clojure-mode-hook #'enable-paredit-mode))
 
-     (defun my/cider-ansi-color-string-p (value)
-       "Check for extra ANSI chars on VALUE."
-         (or (string-match "^\\[" value)
-             (string-match "\u001B\\[" value)))
-
-     (defun my/cider-font-lock-as (mode string)
-       "Use MODE to font-lock the STRING.
-          Copied from cider-util.el, it does the same but doesn't remove
-          string properties"
-         (let ((string (if (cider-ansi-color-string-p string)
-                           (ansi-color-apply string)
-                         string)))
-           (if (or (null cider-font-lock-max-length)
-                   (< (length string) cider-font-lock-max-length))
-               (with-current-buffer (cider--make-buffer-for-mode mode)
-                 (erase-buffer)
-                 (insert string)
-                 (font-lock-fontify-region (point-min) (point-max))
-                 (buffer-string))
-             string)))
-
      (use-package cider
        :config
        (setq cider-save-file-on-load t)
@@ -591,8 +570,6 @@
        (setq cider-clojure-cli-global-options "-A:portal -A:injections")
        ; make sure we're using a http-kit version that is compatible with portal
        (cider-add-to-alist 'cider-jack-in-dependencies "http-kit/http-kit" "2.5.3")
-       (advice-add 'cider-ansi-color-string-p :override #'my/cider-ansi-color-string-p)
-       (advice-add 'cider-font-lock-as :override #'my/cider-font-lock-as)
        (my/leader-key-commands
         clojure-mode
         :eval/buffer 'cider-eval-buffer
