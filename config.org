@@ -348,10 +348,8 @@
      user=rfhayashi
    #+end_src
    #+begin_src conf-unix :tangle ~/.config/git/ignore
-     .lsp
      .nrepl-port
      .cpcache
-     .clj-kondo
      .eastwood
      *.repl
    #+end_src
@@ -420,6 +418,7 @@
       :eval/last-sexp 'eval-last-sexp
       :eval/last-sexp-pprint 'eval-print-last-sexp)
    #+end_src
+   
 ** Clojure
    Setup for working with clojure. Sets up [[https://github.com/clojure-emacs/cider][cider]] and [[https://github.com/snoe/clojure-lsp][clojure lsp]].
 *** Dotfiles
