@@ -335,6 +335,7 @@
 
      [core]
      editor=vim
+     excludesfile=~/.config/ignore
 
      [push]
      default=current
@@ -352,6 +353,9 @@
      .cpcache
      .eastwood
      *.repl
+     .clj-kondo/cache
+     .clj-kondo/.cache
+     .lsp/.cache
    #+end_src
 ** Magit
    Work with git with a little bit of [[https://magit.vc/][magit]]
@@ -502,7 +506,7 @@
                   :main-opts ["-m" "depot.outdated.main"]}
      
        :oz {:extra-deps {metasoarous/oz {:mvn/version "1.6.0-alpha6"}}}
-       :portal {:extra-deps {djblue/portal {:mvn/version "0.24.0"}}}
+       :portal {:extra-deps {djblue/portal {:mvn/version "0.29.1"}}}
        :injections {:extra-deps {my/tap {:local/root "<<homedir()>>/.clojure/injections"}}}}}
    #+end_src
 
@@ -519,7 +523,7 @@
    #+begin_src clojure :tangle ~/.lein/profiles.clj
      {:user
       {:dependencies        [[my/tap "0.0.1-SNAPSHOT"]
-                             [djblue/portal "0.24.0"]]
+                             [djblue/portal "0.29.1"]]
        :injections          [(require 'tap)
                              (require 'portal)
                              (portal.api/tap)]}}
@@ -604,6 +608,12 @@
        :config
        (clj-refactor-mode 1))
    #+end_src
+   
+
+** Javascript
+#+begin_src emacs-lisp
+(setq js-indent-level 2)
+#+end_src
 * Org mode
 ** Main
   My [[https://orgmode.org/][org mode]] and [[https://github.com/org-roam/org-roam][org roam]] setup.
