@@ -398,18 +398,19 @@
   by Protesilaos Stavrou ([[https://protesilaos.com/codelog/2020-08-03-emacs-custom-functions-galore/][See]]).
   #+begin_src emacs-lisp
     (use-package scratch
+      :straight (:host nil :repo "https://codeberg.org/emacs-weirdware/scratch.git")
       :config
       (defun prot/scratch-buffer-setup ()
-	"Add contents to `scratch' buffer and name it accordingly."
-	(let* ((mode (format "%s" major-mode))
-	       (string (concat "Scratch buffer for: " mode "\n\n")))
-	  (when scratch-buffer
-	    (save-excursion
-	      (insert string)
-	      (goto-char (point-min))
-	      (comment-region (point-at-bol) (point-at-eol)))
-	    (forward-line 2))
-	  (rename-buffer (concat "*Scratch for " mode "*") t)))
+        "Add contents to `scratch' buffer and name it accordingly."
+        (let* ((mode (format "%s" major-mode))
+               (string (concat "Scratch buffer for: " mode "\n\n")))
+          (when scratch-buffer
+            (save-excursion
+              (insert string)
+              (goto-char (point-min))
+              (comment-region (point-at-bol) (point-at-eol)))
+            (forward-line 2))
+          (rename-buffer (concat "*Scratch for " mode "*") t)))
       (add-hook 'scratch-create-buffer-hook 'prot/scratch-buffer-setup))
   #+end_src
 * Languages
