@@ -38,7 +38,7 @@
  ("org" . "d5b8180e72574489a2344442459c2a10eed9b995")
  ("org-roam" . "54d17cc50f03f22ca44f4d88f7e589a00c59d05c")
  ("paredit" . "009c95980e52cc4d736fa1404cf17c86fe97fd7d")
- ("parseclj" . "fcebf650759929256ec9c4bb83b677240622be8a")
+ ("parseclj" . "4d0e780e00f1828b00c43099e6eebc6582998f72")
  ("parseedn" . "a67204eeaa32ca8f11f6aeecc2a88349f196add6")
  ("projectile" . "036d327b5ad9b970bd1ea3123692a80bc1015b4a")
  ("queue" . "130c2d656cd5d7376552272fab9e50a7c37d0c4a")
