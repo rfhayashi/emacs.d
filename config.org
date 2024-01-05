@@ -422,6 +422,15 @@
       :eval/top-level-form 'eval-defun
       :eval/last-sexp 'eval-last-sexp
       :eval/last-sexp-pprint 'eval-print-last-sexp)
+
+     ; (straight-use-package
+     ; '(portal :type git
+     ;          :host github
+     ;          :repo "rfhayashi/portal.el"
+     ;          :branch "v0"
+     ;          :files ("portal.el" "bb")))
+
+     ;(require 'portal)
    #+end_src
    
 ** Clojure
@@ -570,8 +579,7 @@
        (setq cider-test-defining-forms '("deftest" "defspec" "defflow" "defflow-with-context"))
        (setq org-babel-clojure-backend 'cider)
        (setq clojure-toplevel-inside-comment-form t)
-       (setq cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow")
-       (setq cider-clojure-cli-global-options "-A:portal -A:injections")
+       (setq cider-clojure-cli-global-options "-A:portal -A:injections -J-XX:-OmitStackTraceInFastThrow")
        ; make sure we're using a http-kit version that is compatible with portal
        (cider-add-to-alist 'cider-jack-in-dependencies "http-kit/http-kit" "2.5.3")
        (my/leader-key-commands
@@ -747,3 +755,22 @@
            (condition-case nil (org-babel-script-escape result)
              (error result)))))
    #+end_src
+
+* Clerk
+Clerk utils
+#+begin_src emacs-lisp
+  (defun clerk-show ()
+    (let ((file-name (buffer-file-name)))
+      (message (concat "clerk show: " file-name))
+      (cider-interactive-eval
+       (concat "(nextjournal.clerk/show! \"" file-name "\")"))))
+
+  (define-minor-mode
+    clerk-mode
+    "Updates clerk notebook when file is saved."
+    :keymap nil
+    :lighter "Clerk"
+    (if clerk-mode
+        (add-hook 'after-save-hook 'clerk-show nil t)
+      (remove-hook 'after-save-hook 'clerk-show t)))
+#+end_src
