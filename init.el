@@ -99,7 +99,8 @@
      ("g" . ("git"
 	     (("s" . magit-status))))
      ("k" . ("paredit"
-	     (("d" . paredit-kill)
+	     (("b" . paredit-forward-barf-sexp)
+	      ("d" . paredit-kill)
 	      ("r" . paredit-raise-sexp)
 	      ("s" . paredit-forward-slurp-sexp))))
      ("w" . ("window"
