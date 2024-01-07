@@ -53,10 +53,7 @@
 
 (show-paren-mode)
 
-(use-package
-  paredit
-  :config
-  (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode))
+(use-package paredit)
 
 (use-package counsel
   :custom
@@ -99,6 +96,10 @@
 (use-package scratch
   :straight (:host nil :repo "https://codeberg.org/emacs-weirdware/scratch.git"))
 
+(use-package clojure-mode)
+
+;; keybindings
+
 (defun my-gen-keymap (desc-map)
   (seq-let (desc map) desc-map
     (let ((keymap (make-sparse-keymap)))
@@ -123,6 +124,8 @@
 		   (("b" . counsel-switch-buffer)
 		    ("d" . kill-this-buffer)
 		    ("s" . scratch))))
+	   ("c" . ("clerk"
+		   (("f" . clerk-find-notebook))))
 	   ("f" . ("file"
 		   (("f" . find-file))))
 	   ("g" . ("git"
@@ -154,9 +157,14 @@
   (evil-global-set-key 'normal (kbd "SPC") space-key-map)
   (evil-global-set-key 'normal (kbd "C-SPC") space-key-map))
 
+;; setup
 (let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))
        (files (thread-last
 		(directory-files initd-dir)
 		(seq-filter (apply-partially 's-ends-with-p ".el")))))
   (dolist (file files)
     (load-file (expand-file-name file initd-dir))))
+
+; libraries
+(add-to-list 'load-path (expand-file-name "lib" user-emacs-directory))
+(require 'clerk)

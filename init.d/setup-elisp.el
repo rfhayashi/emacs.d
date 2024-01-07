@@ -13,3 +13,4 @@
 		 ("p" . eval-print-last-sexp)))))))))
 
 (add-hook 'emacs-lisp-mode-hook 'my-set-emacs-lisp-keys)
+(add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
