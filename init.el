@@ -98,10 +98,7 @@
 	  val
 	(my-gen-keymap val)))))
 
-(evil-global-set-key
- 'normal
- (kbd "SPC")
- (my-gen-keymap
+(let ((space-key-map (my-gen-keymap
   '("space"
     (("SPC" . execute-extended-command)
      ("'" . shell)
@@ -130,7 +127,9 @@
      ("7" . winum-select-window-7)
      ("8" . winum-select-window-8)
      ("9" . winum-select-window-9)
-     ("0" . winum-select-window-0-or-10)))))
+     ("0" . winum-select-window-0-or-10))))))
+  (evil-global-set-key 'normal (kbd "SPC") space-key-map)
+  (evil-global-set-key 'normal (kbd "C-SPC") space-key-map))
 
 (let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))
        (files (thread-last
