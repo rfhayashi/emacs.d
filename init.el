@@ -6,10 +6,8 @@
 
 (straight-use-package 'use-package)
 
-(use-package
-  s
-  :config
-  (require 's))
+(use-package a)
+(use-package s)
 
 (use-package
   evil
