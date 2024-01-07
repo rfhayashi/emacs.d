@@ -1,3 +1,4 @@
 straight/build
 straight/repos
 straight/build-cache.el
+/transient/

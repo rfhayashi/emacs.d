@@ -7,6 +7,11 @@
 (straight-use-package 'use-package)
 
 (use-package
+  s
+  :config
+  (require 's))
+
+(use-package
   evil
   :init
   (setq evil-want-keybinding nil)
@@ -127,16 +132,9 @@
      ("9" . winum-select-window-9)
      ("0" . winum-select-window-0-or-10)))))
 
-(defun my-set-emacs-lisp-keys ()
-  (evil-local-set-key
-    'normal
-    (kbd ",")
-    (my-gen-keymap
-     '("local"
-       (("e" . ("eval"
-		(("e" . eval-last-sexp)
-		 ("f" . eval-defun)
-		 ("b" . eval-buffer)
-		 ("p" . eval-print-last-sexp)))))))))
-
-(add-hook 'emacs-lisp-mode-hook 'my-set-emacs-lisp-keys)
+(let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))
+       (files (thread-last
+		(directory-files initd-dir)
+		(seq-filter (apply-partially 's-ends-with-p ".el")))))
+  (dolist (file files)
+    (load-file (expand-file-name file initd-dir))))
