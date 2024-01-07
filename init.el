@@ -94,6 +94,8 @@
      ("b" . ("buffer"
 	     (("b" . counsel-switch-buffer)
 	      ("d" . kill-this-buffer))))
+     ("f" . ("file"
+	     (("f" . find-file))))
      ("g" . ("git"
 	     (("s" . magit-status))))
      ("k" . ("paredit"
