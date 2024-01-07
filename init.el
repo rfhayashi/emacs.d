@@ -96,6 +96,9 @@
   :config
   (counsel-projectile-mode))
 
+(use-package scratch
+  :straight (:host nil :repo "https://codeberg.org/emacs-weirdware/scratch.git"))
+
 (defun my-gen-keymap (desc-map)
   (seq-let (desc map) desc-map
     (let ((keymap (make-sparse-keymap)))
@@ -111,41 +114,43 @@
 	  val
 	(my-gen-keymap val)))))
 
-(let ((space-key-map (my-gen-keymap
-  '("space"
-    (("SPC" . execute-extended-command)
-     ("'" . shell)
-     ("b" . ("buffer"
-	     (("b" . counsel-switch-buffer)
-	      ("d" . kill-this-buffer))))
-     ("f" . ("file"
-	     (("f" . find-file))))
-     ("g" . ("git"
-	     (("s" . magit-status))))
-     ("k" . ("paredit"
-	     (("b" . paredit-forward-barf-sexp)
-	      ("d" . paredit-kill)
-	      ("r" . paredit-raise-sexp)
-	      ("s" . paredit-forward-slurp-sexp))))
-     ("p" . ("project"
-	     (("f" . projectile-find-file)
-	      ("p" . projectile-switch-project)
-	      ("'" . projectile-run-shell)
-	      ("/" . projectile-ag))))
-     ("w" . ("window"
-	     (("/" . split-window-right)
-	      ("-" . split-window-below)
-	      ("d" . delete-window))))
-     ("1" . winum-select-window-1)
-     ("2" . winum-select-window-2)
-     ("3" . winum-select-window-3)
-     ("4" . winum-select-window-4)
-     ("5" . winum-select-window-5)
-     ("6" . winum-select-window-6)
-     ("7" . winum-select-window-7)
-     ("8" . winum-select-window-8)
-     ("9" . winum-select-window-9)
-     ("0" . winum-select-window-0-or-10))))))
+(let ((space-key-map
+       (my-gen-keymap
+	'("space"
+	  (("SPC" . execute-extended-command)
+	   ("'" . shell)
+	   ("b" . ("buffer"
+		   (("b" . counsel-switch-buffer)
+		    ("d" . kill-this-buffer)
+		    ("s" . scratch))))
+	   ("f" . ("file"
+		   (("f" . find-file))))
+	   ("g" . ("git"
+		   (("s" . magit-status))))
+	   ("k" . ("paredit"
+		   (("b" . paredit-forward-barf-sexp)
+		    ("d" . paredit-kill)
+		    ("r" . paredit-raise-sexp)
+		    ("s" . paredit-forward-slurp-sexp))))
+	   ("p" . ("project"
+		   (("f" . projectile-find-file)
+		    ("p" . projectile-switch-project)
+		    ("'" . projectile-run-shell)
+		    ("/" . projectile-ag))))
+	   ("w" . ("window"
+		   (("/" . split-window-right)
+		    ("-" . split-window-below)
+		    ("d" . delete-window))))
+	   ("1" . winum-select-window-1)
+	   ("2" . winum-select-window-2)
+	   ("3" . winum-select-window-3)
+	   ("4" . winum-select-window-4)
+	   ("5" . winum-select-window-5)
+	   ("6" . winum-select-window-6)
+	   ("7" . winum-select-window-7)
+	   ("8" . winum-select-window-8)
+	   ("9" . winum-select-window-9)
+	   ("0" . winum-select-window-0-or-10))))))
   (evil-global-set-key 'normal (kbd "SPC") space-key-map)
   (evil-global-set-key 'normal (kbd "C-SPC") space-key-map))
 
