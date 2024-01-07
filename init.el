@@ -67,6 +67,15 @@
          :map ivy-reverse-i-search-map
          ("C-k" . ivy-previous-line)))
 
+(use-package swiper
+  :bind
+  (:map evil-normal-state-map
+        ("/" . swiper)))
+
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+
 (use-package magit)
 
 (defun my-gen-keymap (desc-map)
