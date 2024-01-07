@@ -81,6 +81,18 @@
 
 (use-package magit)
 
+(use-package
+ projectile
+ :config
+ (projectile-mode +1)
+ :init
+ (when (file-directory-p "~/dev")
+   (setq projectile-project-search-path '("~/dev"))))
+
+(use-package counsel-projectile
+  :config
+  (counsel-projectile-mode))
+
 (defun my-gen-keymap (desc-map)
   (seq-let (desc map) desc-map
     (let ((keymap (make-sparse-keymap)))
@@ -112,6 +124,11 @@
 	      ("d" . paredit-kill)
 	      ("r" . paredit-raise-sexp)
 	      ("s" . paredit-forward-slurp-sexp))))
+     ("p" . ("project"
+	     (("f" . projectile-find-file)
+	      ("p" . projectile-switch-project)
+	      ("'" . projectile-run-shell)
+	      ("/" . projectile-ag))))
      ("w" . ("window"
 	     (("/" . split-window-right)
 	      ("-" . split-window-below)
