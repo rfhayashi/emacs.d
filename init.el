@@ -6,6 +6,9 @@
 
 (straight-use-package 'use-package)
 
+(require 'org)
+(org-babel-tangle-file (expand-file-name "dotfiles.org" user-emacs-directory))
+
 (use-package a)
 (use-package s)
 
