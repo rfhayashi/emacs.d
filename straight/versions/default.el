@@ -15,6 +15,7 @@
  ("goto-chg" . "278cd3e6d5107693aa2bb33189ca503f22f227d0")
  ("ivy-rich" . "aff9b6bd53e0fdcf350ab83c90e64e651b47dba4")
  ("magit" . "5c652a086e289e5a257745baa9eb7d98ee734516")
+ ("markdown-mode" . "e096bb97a91fcd4dc2b46d8b6e093194b03b7364")
  ("melpa" . "313a500ae727ff1497c03803b12920baefeccd99")
  ("nongnu-elpa" . "119e5d4ac0d253b6f58749212f48b497d36a558e")
  ("paredit" . "9a2c4b37fc8c1c7bdbb1f86fdec874c0d0652e64")
