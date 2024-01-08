@@ -138,12 +138,12 @@
 	   ("p" . ("project"
 		   (("f" . projectile-find-file)
 		    ("p" . projectile-switch-project)
-		    ("'" . projectile-run-shell)
-		    ("/" . projectile-ag))))
+		    ("'" . projectile-run-shell))))
 	   ("w" . ("window"
 		   (("/" . split-window-right)
 		    ("-" . split-window-below)
 		    ("d" . delete-window))))
+	   ("/" . projectile-ag)
 	   ("1" . winum-select-window-1)
 	   ("2" . winum-select-window-2)
 	   ("3" . winum-select-window-3)
