@@ -98,6 +98,9 @@
 
 (use-package markdown-mode)
 
+;; ability to edit markdown code blocks in another buffer
+(use-package edit-indirect)
+
 ;; keybindings
 
 (defun my-gen-keymap (desc-map)
