@@ -5,6 +5,7 @@
  ("compat" . "4dae63c27be9713d1049e7e89570f95c90aeff51")
  ("counsel-projectile" . "40d1e1d4bb70acb00fddd6f4df9778bf2c52734b")
  ("dash.el" . "e32a70ca636bad42232b6c79f1491dc86802a721")
+ ("edit-indirect" . "d0378d9747791fcd78370a0e52ec018d5970c482")
  ("el-get" . "a5ba5852648a90ee0cde9fb5d72e69497d260eec")
  ("emacs-which-key" . "4d20bc852545a2e602f59084a630f888542052b1")
  ("emacs-winum" . "c5455e866e8a5f7eab6a7263e2057aff5f1118b9")
