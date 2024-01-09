@@ -127,10 +127,6 @@
 		   (("b" . counsel-switch-buffer)
 		    ("d" . kill-this-buffer)
 		    ("s" . scratch))))
-	   ("c" . ("clerk"
-		   (("f" . clerk-find-notebook)
-		    ("s" . clerk-show)
-		    ("'" . clerk-serve))))
 	   ("f" . ("file"
 		   (("f" . find-file))))
 	   ("g" . ("git"
@@ -144,6 +140,10 @@
 		   (("f" . projectile-find-file)
 		    ("p" . projectile-switch-project)
 		    ("'" . projectile-run-shell))))
+	   ("r" . ("clerk"
+		   (("f" . clerk-find-notebook)
+		    ("s" . clerk-show)
+		    ("'" . clerk-serve))))
 	   ("w" . ("window"
 		   (("/" . split-window-right)
 		    ("-" . split-window-below)
