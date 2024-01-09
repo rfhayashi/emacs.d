@@ -96,7 +96,6 @@
 (use-package scratch
   :straight (:host nil :repo "https://codeberg.org/emacs-weirdware/scratch.git"))
 
-(use-package clojure-mode)
 (use-package markdown-mode)
 
 ;; keybindings
