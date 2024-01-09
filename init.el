@@ -126,7 +126,9 @@
 		    ("d" . kill-this-buffer)
 		    ("s" . scratch))))
 	   ("c" . ("clerk"
-		   (("f" . clerk-find-notebook))))
+		   (("f" . clerk-find-notebook)
+		    ("s" . clerk-show)
+		    ("'" . clerk-serve))))
 	   ("f" . ("file"
 		   (("f" . find-file))))
 	   ("g" . ("git"
