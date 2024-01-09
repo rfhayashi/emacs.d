@@ -3,3 +3,4 @@ straight/repos
 straight/build-cache.el
 /transient/
 /projectile-bookmarks.eld
+/session.*

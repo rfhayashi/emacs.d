@@ -2,7 +2,7 @@
 
 (require 's)
 
-(defconst clerk-extension ".clerk")
+(defconst clerk-extension ".md")
 (defvar clerk-directory (expand-file-name ".clerk" (getenv "HOME")))
 
 (defun clerk--ensure-directory-exists (dir)
@@ -39,9 +39,9 @@
 			      (completing-read "Clerk notebook: " (clerk--notebooks))
 			      (clerk--notebook-file))))
     (find-file notebook-file)
-    (clojure-mode)
     (clerk-mode)
-    (clerk--show)))
+    (save-buffer)
+    (clerk-show)))
 
 (defvar clerk-process nil)
 
@@ -51,7 +51,7 @@
 	  (start-file-process-shell-command
 	   "clerk"
 	   (get-buffer-create "clerk-buffer")
-	   "clojure"))))
+	   "clojure -J-Xmx2g"))))
 
 (defun clerk--eval (input)
   (process-send-string clerk-process (concat input "\n")))
@@ -69,11 +69,17 @@
     (let ((file-name (buffer-file-name)))
       (clerk--eval (concat "(clerk/show! \"" file-name "\")")))))
 
+(defun clerk--add-hooks ()
+  (add-hook 'after-save-hook 'clerk-show nil t))
+
+(defun clerk--remove-hooks ()
+  (remove-hook 'after-save-hook 'clerk-show t))
+
 (define-minor-mode clerk-mode
   "Updates clerk notebook when file is saved."
   :lighter "Clerk"
   (if clerk-mode
-      (add-hook 'after-save-hook 'clerk-show nil t)
-    (remove-hook 'after-save-hook 'clerk-show nil t)))
+      (clerk--add-hooks)
+    (clerk--remove-hooks)))
 
 (provide 'clerk)
