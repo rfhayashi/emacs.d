@@ -40,8 +40,7 @@
 			      (clerk--notebook-file))))
     (find-file notebook-file)
     (clerk-mode)
-    (save-buffer)
-    (clerk-show)))
+    (save-buffer)))
 
 (defvar clerk-process nil)
 
@@ -79,7 +78,9 @@
   "Updates clerk notebook when file is saved."
   :lighter "Clerk"
   (if clerk-mode
-      (clerk--add-hooks)
+      (progn
+	(clerk--add-hooks)
+	(clerk-show))
     (clerk--remove-hooks)))
 
 (provide 'clerk)

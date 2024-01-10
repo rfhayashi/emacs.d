@@ -1,6 +1,8 @@
 (use-package clojure-mode
   :config
-  (add-hook 'clojure-mode-hook 'enable-paredit-mode))
+  (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure"))
+  (add-hook 'clojure-mode-hook 'enable-paredit-mode)
+  (add-hook 'clojure-mode-hook 'lsp))
 
 (defun my-cider-test-run-focused-test ()
   "Run test around point"
@@ -25,6 +27,12 @@
 		("e" . cider-eval-last-sexp)
 		("f" . cider-eval-defun-at-point)
 		("p" . cider-eval-print-last-sexp))))
+       ("g". ("jump"
+	      (("d" . cider-doc)
+	       ("g" . lsp-find-definition)
+	       ("r" . lsp-find-references))))
+       ("r" . ("refactor"
+	       (("r" . lsp-rename))))
        ("s" . ("repl"
 	       (("q" . cider-quit)
 		("x" . cider-ns-refresh))))

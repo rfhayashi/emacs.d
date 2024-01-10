@@ -101,6 +101,8 @@
 ;; ability to edit markdown code blocks in another buffer
 (use-package edit-indirect)
 
+(use-package lsp-mode)
+
 ;; keybindings
 
 (defun my-gen-keymap (desc-map)
