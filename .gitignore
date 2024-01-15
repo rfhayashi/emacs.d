@@ -6,3 +6,4 @@ straight/build-cache.el
 /session.*
 /.cache/
 /.lsp-session-v1
+/workspace/
