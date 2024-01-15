@@ -135,7 +135,7 @@
 		   (("s" . magit-status))))
 	   ("k" . ("paredit"
 		   (("b" . paredit-forward-barf-sexp)
-		    ("d" . paredit-kill)
+		    ("d" . kill-sexp)
 		    ("r" . paredit-raise-sexp)
 		    ("s" . paredit-forward-slurp-sexp))))
 	   ("p" . ("project"
