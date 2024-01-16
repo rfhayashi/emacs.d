@@ -7,3 +7,4 @@ straight/build-cache.el
 /.cache/
 /.lsp-session-v1
 /workspace/
+/projects

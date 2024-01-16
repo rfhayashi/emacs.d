@@ -10,7 +10,10 @@
 		(("e" . eval-last-sexp)
 		 ("f" . eval-defun)
 		 ("b" . eval-buffer)
-		 ("p" . eval-print-last-sexp)))))))))
+		 ("p" . eval-print-last-sexp))))
+	("g" . ("jump"
+		(("g" . evil-goto-definition)
+		 ("r" . xref-find-references)))))))))
 
 (add-hook 'emacs-lisp-mode-hook 'my-set-emacs-lisp-keys)
 (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
