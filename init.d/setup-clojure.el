@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (use-package clojure-mode
   :config
   (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure"))

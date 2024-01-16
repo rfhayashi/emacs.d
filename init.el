@@ -96,11 +96,6 @@
 (use-package scratch
   :straight (:host nil :repo "https://codeberg.org/emacs-weirdware/scratch.git"))
 
-(use-package markdown-mode)
-
-;; ability to edit markdown code blocks in another buffer
-(use-package edit-indirect)
-
 (use-package lsp-mode)
 
 ;; keybindings
