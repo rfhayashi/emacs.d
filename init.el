@@ -97,6 +97,9 @@
   :straight (:host nil :repo "https://codeberg.org/emacs-weirdware/scratch.git"))
 
 (use-package lsp-mode)
+(use-package lsp-ivy)
+
+(use-package flycheck)
 
 ;; keybindings
 

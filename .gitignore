@@ -8,3 +8,4 @@ straight/build-cache.el
 /.lsp-session-v1
 /workspace/
 /projects
+/projectile.cache
