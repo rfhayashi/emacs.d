@@ -47,3 +47,9 @@
 	       (("g" . obsidian-follow-link-at-point)))))))))
 
 (add-hook 'obsidian-mode-hook 'my-set-obsidian-keys)
+
+(defvar obsidian-directory (expand-file-name "dev/obsidian" (getenv "HOME")))
+
+(defun obsidian-find-file ()
+  (interactive)
+  (projectile-find-file-in-directory obsidian-directory))

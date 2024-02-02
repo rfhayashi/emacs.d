@@ -136,6 +136,8 @@
 		    ("d" . kill-sexp)
 		    ("r" . paredit-raise-sexp)
 		    ("s" . paredit-forward-slurp-sexp))))
+	   ("o" . ("obsidian"
+		   (("f" . obsidian-find-file))))
 	   ("p" . ("project"
 		   (("f" . projectile-find-file)
 		    ("p" . projectile-switch-project)
