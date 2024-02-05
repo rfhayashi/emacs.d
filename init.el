@@ -96,7 +96,12 @@
 (use-package scratch
   :straight (:host nil :repo "https://codeberg.org/emacs-weirdware/scratch.git"))
 
-(use-package lsp-mode)
+(use-package lsp-mode
+  :custom  
+  (lsp--show-message nil) ; avoids that diagnostic messages suppress other important messages
+                          ; we can always enable the lsp messages in case of debugging
+  )
+
 (use-package lsp-ivy)
 
 (use-package flycheck)
