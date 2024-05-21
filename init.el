@@ -106,6 +106,11 @@
 
 (use-package flycheck)
 
+(use-package atomic-chrome
+  :custom
+  (atomic-chrome-enable-auto-update t)
+  (atomic-chrome-default-major-mode 'python-mode))
+
 ;; keybindings
 
 (defun my-gen-keymap (desc-map)
