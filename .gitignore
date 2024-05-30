@@ -10,3 +10,4 @@ straight/build-cache.el
 /projects
 /projectile.cache
 /elpy/
+/straight/modified/
