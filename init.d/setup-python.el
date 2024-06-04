@@ -10,14 +10,14 @@
   (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
   (add-hook 'inferior-python-mode-hook (lambda () (setq comint-move-point-for-output t))))
 
-(use-package conda
-  :custom
-  (conda-anaconda-home (expand-file-name "~/anaconda3"))
-  :config
-  (conda-env-initialize-interactive-shells)
-  (conda-env-initialize-eshell)
-  (conda-env-autoactivate-mode t)
-  (conda-env-activate "base"))
+;; (use-package conda
+;;   :custom
+;;   (conda-anaconda-home (expand-file-name "~/anaconda3"))
+;;   :config
+;;   (conda-env-initialize-interactive-shells)
+;;   (conda-env-initialize-eshell)
+;;   (conda-env-autoactivate-mode t)
+;;   (conda-env-activate "base"))
 
 (use-package elpy
   :init

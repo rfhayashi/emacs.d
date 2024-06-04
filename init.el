@@ -29,14 +29,6 @@
   (evil-collection-setup-minibuffer t))
 
 (use-package
-  company
-  :config
-  (global-company-mode)
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
-
-(use-package
   which-key
   :config
   (which-key-mode))
@@ -55,30 +47,6 @@
 
 (use-package paredit)
 
-(use-package counsel
-  :custom
-  (ivy-initial-inputs-alist nil)
-  :config
-  (ivy-mode 1)
-  (counsel-mode 1)
-  (setq ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
-  :bind (:map ivy-minibuffer-map
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
-         :map ivy-switch-buffer-map
-         ("C-k" . ivy-previous-line)
-         :map ivy-reverse-i-search-map
-         ("C-k" . ivy-previous-line)))
-
-(use-package swiper
-  :bind
-  (:map evil-normal-state-map
-        ("/" . swiper)))
-
-(use-package ivy-rich
-  :init
-  (ivy-rich-mode 1))
-
 (use-package magit)
 
 (use-package
@@ -89,20 +57,8 @@
  (when (file-directory-p "~/dev")
    (setq projectile-project-search-path '("~/dev"))))
 
-(use-package counsel-projectile
-  :config
-  (counsel-projectile-mode))
-
 (use-package scratch
   :straight (:host nil :repo "https://codeberg.org/emacs-weirdware/scratch.git"))
-
-(use-package lsp-mode
-  :custom  
-  (lsp--show-message nil) ; avoids that diagnostic messages suppress other important messages
-                          ; we can always enable the lsp messages in case of debugging
-  )
-
-(use-package lsp-ivy)
 
 (use-package flycheck)
 
@@ -110,6 +66,10 @@
   :custom
   (atomic-chrome-enable-auto-update t)
   (atomic-chrome-default-major-mode 'python-mode))
+
+(use-package vertico
+  :config
+  (vertico-mode))
 
 ;; keybindings
 
@@ -134,7 +94,7 @@
 	  (("SPC" . execute-extended-command)
 	   ("'" . shell)
 	   ("b" . ("buffer"
-		   (("b" . counsel-switch-buffer)
+		   (("b" . ido-switch-buffer)
 		    ("d" . kill-this-buffer)
 		    ("s" . scratch))))
 	   ("f" . ("file"

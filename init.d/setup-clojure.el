@@ -2,9 +2,10 @@
 
 (use-package clojure-mode
   :config
-  (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure"))
+  ;(add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure"))
   (add-hook 'clojure-mode-hook 'enable-paredit-mode)
-  (add-hook 'clojure-mode-hook 'lsp))
+  ;(add-hook 'clojure-mode-hook 'lsp)
+  )
 
 (defun my-cider-test-run-focused-test ()
   "Run test around point"
