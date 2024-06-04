@@ -11,3 +11,4 @@ straight/build-cache.el
 /projectile.cache
 /elpy/
 /straight/modified/
+/eln-cache/
