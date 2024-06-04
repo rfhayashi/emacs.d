@@ -71,6 +71,12 @@
   :config
   (vertico-mode))
 
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless basic))
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides '((file (styles partial-completion)))))
+
 ;; keybindings
 
 (defun my-gen-keymap (desc-map)
