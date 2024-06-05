@@ -30,7 +30,7 @@
 		("p" . cider-eval-print-last-sexp))))
        ("g". ("jump"
 	      (("d" . cider-doc)
-	       ("g" . eglot-find-declaration)
+	       ("g" . xref-find-definitions)
 	       ("r" . xref-find-references))))
        ("r" . ("refactor"
 	       (("r" . eglot-rename))))
