@@ -17,31 +17,6 @@
   (cider-load-buffer)
   (cider-test-run-ns-tests nil))
 
-(defun my-set-clojure-keys ()
-  (evil-local-set-key
-   'normal
-   (kbd ",")
-   (my-gen-keymap
-    '("local"
-      (("e" . ("eval"
-	       (("b" . cider-eval-buffer)
-		("e" . cider-eval-last-sexp)
-		("f" . cider-eval-defun-at-point)
-		("p" . cider-eval-print-last-sexp))))
-       ("g". ("jump"
-	      (("d" . cider-doc)
-	       ("g" . xref-find-definitions)
-	       ("r" . xref-find-references))))
-       ("r" . ("refactor"
-	       (("r" . eglot-rename))))
-       ("s" . ("repl"
-	       (("q" . cider-quit)
-		("x" . cider-ns-refresh))))
-       ("t" . ("test"
-	       (("n" . my-cider-test-run-ns-tests)
-		("t" . my-cider-test-run-focused-test))))
-       ("'" . cider-jack-in))))))
-
 (use-package cider
   :custom
   (cider-save-file-on-load t)
@@ -49,5 +24,18 @@
   (cider-test-defining-forms '("deftest" "defspec"))
   (clojure-toplevel-inside-comment-form t)
   (cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow")
-  :config
-  (add-hook 'clojure-mode-hook 'my-set-clojure-keys))
+  :general
+  (leader-def :keymaps 'clojure-mode-map
+    "eb" 'cider-eval-buffer
+    "ee" 'cider-eval-last-sexp
+    "ef" 'cider-eval-defun-at-point
+    "ep" 'cider-eval-print-last-sexp
+    "gd" 'cider-doc
+    "gg" 'xref-find-definitions
+    "gr" 'xref-find-references
+    "rr" 'eglot-rename
+    "s" '(:ignore t :which-key "repl")
+    "sq" 'cider-quit
+    "tn" 'my-cider-test-run-ns-tests
+    "tt" 'my-cider-test-run-focused-test
+    "'" 'cider-jack-in))

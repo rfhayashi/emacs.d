@@ -36,32 +36,40 @@
    :global-prefix "C-SPC"
    :prefix "SPC"))
 
+(general-create-definer leader-def
+  :prefix ","
+  :states '(normal visual)
+  "e" '(:ignore t :which-key "eval")
+  "g" '(:ignore t :which-key "jump")
+  "r" '(:ignore t :which-key "refactor")
+  "t" '(:ignore t :which-key "test"))
+
 (use-package emacs
   :straight nil
   :general
   (space-key-map
-    "SPC" 'execute-extended-command
-    "'" 'shell
-    "b" '("buffer" . (keymap))
-    "bb" 'ido-switch-buffer
-    "bd" 'kill-this-buffer
-    "bs" 'scratch
-    "f" '("file" . (keymap))
-    "ff" 'find-file
-    "w" '("window" . (keymap))
-    "w/" 'split-window-right
-    "w-" 'split-window-below
-    "wd" 'delete-window
-    "1" 'winum-select-window-1
-    "2" 'winum-select-window-2
-    "3" 'winum-select-window-3
-    "4" 'winum-select-window-4
-    "5" 'winum-select-window-5
-    "6" 'winum-select-window-6
-    "7" 'winum-select-window-7
-    "8" 'winum-select-window-8
-    "9" 'winum-select-window-9
-    "0" 'winum-select-window-0-or-10))
+   "SPC" 'execute-extended-command
+   "'" 'shell
+   "b" '("buffer" . (keymap))
+   "bb" 'ido-switch-buffer
+   "bd" 'kill-this-buffer
+   "bs" 'scratch
+   "f" '("file" . (keymap))
+   "ff" 'find-file
+   "w" '("window" . (keymap))
+   "w/" 'split-window-right
+   "w-" 'split-window-below
+   "wd" 'delete-window
+   "1" 'winum-select-window-1
+   "2" 'winum-select-window-2
+   "3" 'winum-select-window-3
+   "4" 'winum-select-window-4
+   "5" 'winum-select-window-5
+   "6" 'winum-select-window-6
+   "7" 'winum-select-window-7
+   "8" 'winum-select-window-8
+   "9" 'winum-select-window-9
+   "0" 'winum-select-window-0-or-10))
 
 
 
@@ -156,23 +164,6 @@
 (use-package which-key
   :config
   (which-key-mode))
-
-;; keybindings
-
-(defun my-gen-keymap (desc-map)
-  (seq-let (desc map) desc-map
-    (let ((keymap (make-sparse-keymap)))
-      (dolist (mapping map)
-	(my-gen-key keymap mapping))
-      (cons desc keymap))))
-
-(defun my-gen-key (parent-map key-data)
-  (let ((key (kbd (car key-data)))
-	(val (cdr key-data)))
-    (define-key parent-map key
-      (if (symbolp val)
-	  val
-	(my-gen-keymap val)))))
 
 ;; setup
 (let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))

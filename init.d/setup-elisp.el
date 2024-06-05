@@ -1,19 +1,14 @@
 ;;; -*- lexical-binding: t; -*-
 
-(defun my-set-emacs-lisp-keys ()
-  (evil-local-set-key
-    'normal
-    (kbd ",")
-    (my-gen-keymap
-     '("local"
-       (("e" . ("eval"
-		(("e" . eval-last-sexp)
-		 ("f" . eval-defun)
-		 ("b" . eval-buffer)
-		 ("p" . eval-print-last-sexp))))
-	("g" . ("jump"
-		(("g" . evil-goto-definition)
-		 ("r" . xref-find-references)))))))))
-
-(add-hook 'emacs-lisp-mode-hook 'my-set-emacs-lisp-keys)
-(add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
+(use-package emacs-lisp-mode
+  :straight nil
+  :general
+  (leader-def :keymaps 'emacs-lisp-mode-map
+    "ee" 'eval-last-sexp
+    "ef" 'eval-defun
+    "eb" 'eval-buffer
+    "ep" 'eval-print-last-sexp
+    "gg" 'evil-goto-definition
+    "gr" 'xref-find-references)
+  :hook
+  (emacs-lisp-mode . enable-paredit-mode))
