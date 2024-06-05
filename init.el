@@ -49,6 +49,7 @@
 
 (use-package emacs
   :straight nil
+  :diminish auto-revert-mode
   :general
   (space-key-map
    "SPC" 'execute-extended-command
