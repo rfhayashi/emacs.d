@@ -47,8 +47,6 @@
 
 (use-package magit)
 
-(use-package ag)
-
 (use-package projectile
   :config
   (projectile-mode +1)
