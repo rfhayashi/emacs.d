@@ -12,6 +12,8 @@
 (use-package a)
 (use-package s)
 
+(use-package diminish)
+
 (defvar space-key-map (make-sparse-keymap))
 
 (use-package evil
@@ -23,6 +25,7 @@
   (evil-mode 1))
 
 (use-package evil-collection
+  :diminish evil-collection-unimpaired-mode
   :init
   (evil-collection-init)
   :custom
@@ -89,6 +92,7 @@
    "gs" 'magit-status))
 
 (use-package projectile
+  :diminish projectile-mode
   :config
   (projectile-mode +1)
   :init
@@ -148,6 +152,7 @@
   (eldoc-echo-area-use-multiline-p nil))
 
 (use-package paredit
+  :diminish paredit-mode
   :general
   (space-key-map
    "k" '("paredit" . (keymap))
@@ -157,6 +162,7 @@
    "ks" 'paredit-forward-slurp-sexp))
 
 (use-package which-key
+  :diminish which-key-mode
   :config
   (which-key-mode))
 
