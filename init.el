@@ -130,7 +130,7 @@
 		   (("/" . split-window-right)
 		    ("-" . split-window-below)
 		    ("d" . delete-window))))
-	   ("/" . consult-grep)
+	   ("/" . consult-git-grep)
 	   ("1" . winum-select-window-1)
 	   ("2" . winum-select-window-2)
 	   ("3" . winum-select-window-3)
