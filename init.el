@@ -85,6 +85,12 @@
   :general (:states '(normal visual)
 	    "/" 'consult-line))
 
+(use-package corfu
+  :custom
+  (corfu-auto t)
+  :init
+  (global-corfu-mode))
+
 ;; keybindings
 
 (defun my-gen-keymap (desc-map)

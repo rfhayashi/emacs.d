@@ -7,6 +7,7 @@
  ("company-mode" . "6c7731d4ec1e43199ea328e1691999b4fe8967a8")
  ("compat" . "0533ca41385aa4509dcd3f8310c0d5b3702f259e")
  ("consult" . "fe4852280006e61be7f1374d021ee06155ce5a26")
+ ("corfu" . "cdc3e13ad312f5f12b3f78f842fff0b398eb4473")
  ("dash.el" . "1de9dcb83eacfb162b6d9a118a4770b1281bcd84")
  ("edit-indirect" . "82a28d8a85277cfe453af464603ea330eae41c05")
  ("el-get" . "f220df34333fdb363b84b28f4ed4a5575341bf45")
