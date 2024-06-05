@@ -71,8 +71,6 @@
    "9" 'winum-select-window-9
    "0" 'winum-select-window-0-or-10))
 
-
-
 (use-package winum
   :config
   (require 'winum)
@@ -83,8 +81,6 @@
   (load-theme 'zenburn t))
 
 (show-paren-mode)
-
-(use-package paredit)
 
 (use-package magit
   :general
@@ -152,7 +148,6 @@
   (eldoc-echo-area-use-multiline-p nil))
 
 (use-package paredit
-  :straight nil
   :general
   (space-key-map
    "k" '("paredit" . (keymap))
