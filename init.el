@@ -92,19 +92,14 @@
    "g" '("git" . (keymap))
    "gs" 'magit-status))
 
-(use-package projectile
-  :diminish projectile-mode
-  :config
-  (projectile-mode +1)
-  :init
-  (when (file-directory-p "~/dev")
-    (setq projectile-project-search-path '("~/dev")))
+(use-package project
+  :straight nil
   :general
   (space-key-map
    "p" '("project" . (keymap))
-   "pp" 'projectile-switch-project
-   "pf" 'projectile-find-file
-   "p'" 'projectile-run-shell))
+   "pp" 'project-switch-project
+   "pf" 'project-find-file
+   "p'" 'project-shell))
 
 (use-package scratch
   :straight (:host nil :repo "https://codeberg.org/emacs-weirdware/scratch.git"))

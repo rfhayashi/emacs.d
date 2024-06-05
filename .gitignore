@@ -2,12 +2,10 @@ straight/build
 straight/repos
 straight/build-cache.el
 /transient/
-/projectile-bookmarks.eld
 /session.*
 /.cache/
 /workspace/
 /projects
-/projectile.cache
 /elpy/
 /straight/modified/
 /eln-cache/
