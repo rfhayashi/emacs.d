@@ -12,8 +12,7 @@
 (use-package a)
 (use-package s)
 
-(use-package
-  evil
+(use-package evil
   :init
   (setq evil-want-keybinding nil)
   (setq evil-want-integration t)
@@ -21,15 +20,15 @@
   :config
   (evil-mode 1))
 
-(use-package
-  evil-collection
+(use-package evil-collection
   :init
   (evil-collection-init)
   :custom
   (evil-collection-setup-minibuffer t))
 
-(use-package
-  which-key
+(use-package general)
+
+(use-package which-key
   :config
   (which-key-mode))
 
@@ -38,8 +37,7 @@
   (require 'winum)
   (winum-mode))
 
-(use-package
-  zenburn-theme
+(use-package zenburn-theme
   :config
   (load-theme 'zenburn t))
 
@@ -51,8 +49,7 @@
 
 (use-package ag)
 
-(use-package
-  projectile
+(use-package projectile
   :config
   (projectile-mode +1)
   :init
@@ -73,7 +70,7 @@
   :bind (:map vertico-map
 	      ("C-j" . vertico-next)
 	      ("C-k" . vertico-previous))
-  :config
+  :init
   (vertico-mode))
 
 (use-package orderless
@@ -81,6 +78,14 @@
   (setq completion-styles '(orderless basic))
   (setq completion-category-defaults nil)
   (setq completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package marginalia
+  :init
+  (marginalia-mode))
+
+(use-package consult
+  :general (:states '(normal visual)
+	    "/" 'consult-line))
 
 ;; keybindings
 
@@ -125,7 +130,7 @@
 		   (("/" . split-window-right)
 		    ("-" . split-window-below)
 		    ("d" . delete-window))))
-	   ("/" . projectile-ag)
+	   ("/" . consult-grep)
 	   ("1" . winum-select-window-1)
 	   ("2" . winum-select-window-2)
 	   ("3" . winum-select-window-3)
