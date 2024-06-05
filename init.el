@@ -49,13 +49,15 @@
 
 (use-package magit)
 
+(use-package ag)
+
 (use-package
- projectile
- :config
- (projectile-mode +1)
- :init
- (when (file-directory-p "~/dev")
-   (setq projectile-project-search-path '("~/dev"))))
+  projectile
+  :config
+  (projectile-mode +1)
+  :init
+  (when (file-directory-p "~/dev")
+    (setq projectile-project-search-path '("~/dev"))))
 
 (use-package scratch
   :straight (:host nil :repo "https://codeberg.org/emacs-weirdware/scratch.git"))
@@ -115,8 +117,6 @@
 		    ("d" . kill-sexp)
 		    ("r" . paredit-raise-sexp)
 		    ("s" . paredit-forward-slurp-sexp))))
-	   ("o" . ("obsidian"
-		   (("f" . obsidian-find-file))))
 	   ("p" . ("project"
 		   (("f" . projectile-find-file)
 		    ("p" . projectile-switch-project)
@@ -146,19 +146,3 @@
 		(seq-filter (apply-partially 's-ends-with-p ".el")))))
   (dolist (file files)
     (load-file (expand-file-name file initd-dir))))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(safe-local-variable-values
-   '((auto-list-mode
-      ("\\.md\\'" . obsidian-mode))
-     (projectile-indexing-method . native))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
