@@ -1,8 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 
 (use-package clojure-mode
-  :config
-  (add-hook 'clojure-mode-hook 'enable-paredit-mode))
+  :hook
+  (clojure-mode . enable-paredit-mode)
+  (clojure-mode . eglot-ensure))
 
 (defun my-cider-test-run-focused-test ()
   "Run test around point"
@@ -29,10 +30,10 @@
 		("p" . cider-eval-print-last-sexp))))
        ("g". ("jump"
 	      (("d" . cider-doc)
-	       ("g" . lsp-find-definition)
-	       ("r" . lsp-find-references))))
+	       ("g" . eglot-find-declaration)
+	       ("r" . xref-find-references))))
        ("r" . ("refactor"
-	       (("r" . lsp-rename))))
+	       (("r" . eglot-rename))))
        ("s" . ("repl"
 	       (("q" . cider-quit)
 		("x" . cider-ns-refresh))))

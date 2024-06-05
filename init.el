@@ -91,6 +91,10 @@
   :init
   (global-corfu-mode))
 
+(use-package eglot
+  :custom
+  (eldoc-echo-area-use-multiline-p nil))
+
 ;; keybindings
 
 (defun my-gen-keymap (desc-map)
