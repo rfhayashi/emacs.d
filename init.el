@@ -94,6 +94,8 @@
 
 (use-package project
   :straight nil
+  :custom
+  (project-switch-commands 'project-find-file)
   :general
   (space-key-map
    "p" '("project" . (keymap))
