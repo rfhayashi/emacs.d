@@ -142,7 +142,11 @@
   :custom
   (corfu-auto t)
   :init
-  (global-corfu-mode))
+  (global-corfu-mode)
+  :bind
+  (:map corfu-map
+	("C-j" . 'corfu-next)
+	("C-k" . 'corfu-previous)))
 
 (use-package eglot
   :straight nil
