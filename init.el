@@ -56,7 +56,7 @@
    "'" 'shell
    "b" '("buffer" . (keymap))
    "bb" 'ido-switch-buffer
-   "bd" 'kill-this-buffer
+   "bd" 'kill-current-buffer
    "bs" 'scratch
    "f" '("file" . (keymap))
    "ff" 'find-file
