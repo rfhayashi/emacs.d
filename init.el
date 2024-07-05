@@ -168,6 +168,28 @@
   :config
   (which-key-mode))
 
+(use-package treesit
+  :straight nil
+  :preface
+  (dolist (grammar
+	   '((javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.20.1" "src"))
+	     (json . ("https://github.com/tree-sitter/tree-sitter-json" "v0.20.2"))
+	     (jsdoc . ("https://github.com/tree-sitter/tree-sitter-jsdoc" "v0.21.0"))))
+    (add-to-list 'treesit-language-source-alist grammar))
+  (dolist (mapping '((javascript-mode . js-ts-mode)
+		     (json-mode . json-ts-mode)
+		     (js-json-mode . json-ts-mode)))
+    (add-to-list 'major-mode-remap-alist mapping))
+  :config
+  (dolist (grammar treesit-language-source-alist)
+    (unless (treesit-language-available-p (car grammar))
+      (treesit-install-language-grammar (car grammar))))
+
+  (use-package combobulate
+    :hook
+    ((js-ts-mode . combobulate-mode)
+     (json-ts-mode . combulate-mode))))
+
 ;; setup
 (let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))
        (files (thread-last
