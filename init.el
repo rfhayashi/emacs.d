@@ -168,6 +168,9 @@
   :config
   (which-key-mode))
 
+(use-package envrc
+  :hook (after-init . envrc-global-mode))
+
 ;; setup
 (let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))
        (files (thread-last
