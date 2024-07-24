@@ -171,6 +171,8 @@
 (use-package envrc
   :hook (after-init . envrc-global-mode))
 
+(use-package buttercup)
+
 ;; setup
 (let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))
        (files (thread-last
