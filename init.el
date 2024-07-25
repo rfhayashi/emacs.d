@@ -173,6 +173,10 @@
 
 (use-package buttercup)
 
+(use-package yaml-mode)
+
+(use-package nix-mode)
+
 ;; setup
 (let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))
        (files (thread-last
