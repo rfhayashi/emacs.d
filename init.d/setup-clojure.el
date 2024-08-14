@@ -17,6 +17,11 @@
   (cider-load-buffer)
   (cider-test-run-ns-tests nil))
 
+(defun my-cider-portal-open ()
+  (interactive)
+  (let ((repl (cider-current-repl)))
+    (nrepl-send-sync-request `("op" "eval" "code" "(portal.api/open)") repl)))
+
 (use-package cider
   :custom
   (cider-save-file-on-load t)
@@ -24,6 +29,7 @@
   (cider-test-defining-forms '("deftest" "defspec"))
   (clojure-toplevel-inside-comment-form t)
   (cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow")
+  (cider-clojure-cli-global-aliases ":user")
   :general
   (leader-def :keymaps 'clojure-mode-map
     "eb" 'cider-eval-buffer
