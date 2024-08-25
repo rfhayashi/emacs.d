@@ -172,7 +172,6 @@
 
 (use-package yaml-mode)
 
-
 ;; setup
 (let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))
        (files (thread-last
