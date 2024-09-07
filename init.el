@@ -1,5 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 
+(set-frame-font "Source Code Pro 11" nil t)
+
 (setq make-backup-files nil)
 
 (setq straight-use-package-by-default t)
