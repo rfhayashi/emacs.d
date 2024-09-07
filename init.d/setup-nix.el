@@ -2,6 +2,9 @@
 
 (use-package nix-mode)
 
-(defun my-switch-home-manager ()
+(defun my-switch-nix-os ()
   (interactive)
-  (shell-command (concat "home-manager switch --flake " (getenv "HOME") "/dev/home")))
+  (let ((s (shell)))
+    (with-current-buffer s
+      (insert (concat "sudo nixos-rebuild switch --flake " (getenv "HOME") "/dev/nixos-config"))
+      (comint-send-input))))
