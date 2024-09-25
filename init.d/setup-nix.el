@@ -1,6 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
 
-(use-package nix-mode)
+(use-package nix-mode
+  :hook
+  (nix-mode . eglot-ensure))
 
 (defun my-switch-nix-os ()
   (interactive)
