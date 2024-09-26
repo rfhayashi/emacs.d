@@ -4,7 +4,7 @@
   :hook
   (nix-mode . eglot-ensure))
 
-(defun my-switch-nix-os ()
+(defun my-nixos-switch ()
   (interactive)
   (let ((s (shell)))
     (with-current-buffer s
