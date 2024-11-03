@@ -20,7 +20,7 @@
 (defun my-cider-portal-open ()
   (interactive)
   (let ((repl (cider-current-repl)))
-    (nrepl-send-sync-request `("op" "eval" "code" "(portal.api/open)") repl)))
+    (nrepl-send-sync-request `("op" "eval" "code" "(portal/open)") repl)))
 
 (use-package cider
   :custom
@@ -44,4 +44,9 @@
     "sq" 'cider-quit
     "tn" 'my-cider-test-run-ns-tests
     "tt" 'my-cider-test-run-focused-test
-    "'" 'cider-jack-in))
+    "'" 'cider-jack-in)
+  :config
+  (put-clojure-indent 'match 1)
+  (define-clojure-indent
+   (def-source '(1 nil nil (1)))
+   (def-sink '(1 nil nil (1)))))
