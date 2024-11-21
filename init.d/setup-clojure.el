@@ -22,6 +22,16 @@
   (let ((repl (cider-current-repl)))
     (nrepl-send-sync-request `("op" "eval" "code" "(portal/open)") repl)))
 
+(defun my-cider-system-reset ()
+  (interactive)
+  (let ((repl (cider-current-repl)))
+    (nrepl-send-sync-request `("op" "eval" "code" "(repl/reset)") repl)))
+
+(defun my-cider-system-stop ()
+  (interactive)
+  (let ((repl (cider-current-repl)))
+    (nrepl-send-sync-request `("op" "eval" "code" "(repl/stop)") repl)))
+
 (use-package cider
   :custom
   (cider-save-file-on-load t)
@@ -41,6 +51,8 @@
     "gr" 'xref-find-references
     "rr" 'eglot-rename
     "s" '(:ignore t :which-key "repl")
+    "sr" 'my-cider-system-reset
+    "ss" 'my-cider-system-stop
     "sq" 'cider-quit
     "tn" 'my-cider-test-run-ns-tests
     "tt" 'my-cider-test-run-focused-test
