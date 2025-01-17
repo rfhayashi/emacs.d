@@ -1,11 +1,11 @@
 ;;; -*- lexical-binding: t; -*-
 
-(use-package slime
+(use-package sly
   :general
-  (leader-def :keymaps 'slime-mode-map
-    "ee" 'slime-eval-last-expression
-    "ef" 'slime-eval-defun
-    "eb" 'slime-eval-buffer
-    "ep" 'slime-eval-print-last-expression)
+  (leader-def :keymaps 'sly-mode-map
+    "ee" 'sly-eval-last-expression
+    "ef" 'sly-eval-defun
+    "eb" 'sly-eval-buffer
+    "ep" 'sly-eval-print-last-expression)
   :hook
-  (common-lisp-mode . enable-paredit-mode))
+  (sly-mode . enable-paredit-mode))
