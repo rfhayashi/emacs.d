@@ -10,4 +10,4 @@
     "eb" 'sly-eval-buffer
     "ep" 'sly-eval-print-last-expression)
   :hook
-  (sly-mode . enable-paredit-mode))
+  (lisp-mode . enable-paredit-mode))
