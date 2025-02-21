@@ -39,7 +39,7 @@
   (cider-test-defining-forms '("deftest" "defspec"))
   (clojure-toplevel-inside-comment-form t)
   (cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow")
-  (cider-clojure-cli-global-aliases ":user")
+  (cider-clojure-cli-global-aliases ":user:dev")
   :general
   (leader-def :keymaps 'clojure-mode-map
     "eb" 'cider-eval-buffer
