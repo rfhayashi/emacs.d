@@ -47,9 +47,6 @@
     "ef" 'cider-eval-defun-at-point
     "ep" 'cider-eval-print-last-sexp
     "gd" 'cider-doc
-    "gg" 'xref-find-definitions
-    "gr" 'xref-find-references
-    "rr" 'eglot-rename
     "s" '(:ignore t :which-key "repl")
     "sr" 'my-cider-system-reset
     "ss" 'my-cider-system-stop

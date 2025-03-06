@@ -150,7 +150,12 @@
 (use-package eglot
   :straight nil
   :custom
-  (eldoc-echo-area-use-multiline-p nil))
+  (eldoc-echo-area-use-multiline-p nil)
+  :general
+  (leader-def :keymaps 'eglot-mode-map
+    "gg" 'xref-find-definitions
+    "gr" 'xref-find-references
+    "rr" 'eglot-rename))
 
 (use-package paredit
   :diminish paredit-mode
