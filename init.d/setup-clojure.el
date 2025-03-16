@@ -40,6 +40,10 @@
   (clojure-toplevel-inside-comment-form t)
   (cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow")
   (cider-clojure-cli-global-aliases ":user:dev")
+  (cider-babashka-global-options (format
+				  "--init %s -Sdeps '{:deps {djblue/portal {:mvn/version \"0.58.5\"} global/user {:local/root \"%s\"}}}'"
+				  (expand-file-name "~/.clojure/injections/src/user.clj")
+				  (expand-file-name "~/.clojure/injections")))
   :general
   (leader-def :keymaps 'clojure-mode-map
     "eb" 'cider-eval-buffer
