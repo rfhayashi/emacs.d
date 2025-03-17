@@ -34,7 +34,9 @@
 	     (with-current-buffer (get-buffer-create "bb-test-report")
 	       (goto-char (point-max))
 	       (insert (gethash :out (parseedn-read-str (nrepl-dict-get response "value"))))
-	       (goto-char (point-max))))))))))
+	       (set-window-point
+		(get-buffer-window (current-buffer) 'visible)
+		(point-max))))))))))
 
 (defun my-cider-test-run-focused-test ()
   "Run test around point"
