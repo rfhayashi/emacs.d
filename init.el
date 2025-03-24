@@ -6,6 +6,8 @@
 
 (setq straight-use-package-by-default t)
 
+(setq visible-bell t)
+
 (straight-use-package 'use-package)
 
 (use-package a)
