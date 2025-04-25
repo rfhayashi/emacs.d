@@ -2,7 +2,13 @@
 
 (use-package nix-mode
   :hook
-  (nix-mode . eglot-ensure))
+  (nix-mode . lsp-deferred))
+
+(use-package lsp-nix
+  :straight nil
+  :after (lsp-mode)
+  :custom
+  (lsp-nix-nil-formatter ["nixfmt"]))
 
 (defun my-nixos-switch ()
   (interactive)
