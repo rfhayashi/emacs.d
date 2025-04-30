@@ -11,3 +11,4 @@ straight/build-cache.el
 /eln-cache/
 /eshell/
 /tramp
+/.direnv/
