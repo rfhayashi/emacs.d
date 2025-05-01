@@ -6,12 +6,33 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
+  outputs = inputs@{ nixpkgs, flake-parts, ... }:
+    let
+      treeSitterBuild = { lang, pkgs }:
+        let
+          grammar = (builtins.fromJSON (builtins.readFile
+            "${nixpkgs}/pkgs/development/tools/parsing/tree-sitter/grammars/tree-sitter-${lang}.json"));
+        in pkgs.stdenv.mkDerivation {
+          name = "tree-sitter-${lang}";
+          src =
+            pkgs.fetchgit { inherit (grammar) url rev sha256 fetchSubmodules; };
+          buildInputs = [ pkgs.tree-sitter ];
+          installPhase = ''
+            mkdir $out
+            export HOME=$(mktemp --directory)
+            tree-sitter init-config
+            tree-sitter build --output $out/libtree-sitter-${lang}.so $src
+          '';
+        };
+    in flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" ];
       flake = {
         lib = {
-          home-manager-module = { config, lib, ... }: {
+          home-manager-module = { config, lib, pkgs, ... }:
+            let
+              treeSitterNix = treeSitterBuild { lang = "nix"; inherit pkgs; };
+            in
+            {
             options = {
               programs.emacs.userDir = lib.mkOption { type = lib.types.str; };
             };
@@ -33,6 +54,8 @@
                 (ensure-git-repo "${config.programs.emacs.userDir}" "git@github.com:rfhayashi/emacs.d")
 
                 (setq user-emacs-directory "${config.programs.emacs.userDir}")
+
+                (setq treesit-extra-load-path '("${treeSitterNix}")) 
 
                 (let ((early-init-file (expand-file-name "early-init.el" user-emacs-directory)))
                   (load early-init-file t t))
@@ -64,7 +87,8 @@
         };
       };
       perSystem = { pkgs, ... }: {
-        devShells.default = pkgs.mkShell { packages = [ pkgs.home-manager ]; };
+        devShells.default =
+          pkgs.mkShell { packages = [ pkgs.home-manager ]; };
       };
     };
 }
