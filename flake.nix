@@ -11,15 +11,36 @@
       systems = [ "x86_64-linux" ];
       flake = {
         lib = {
-          home-manager-module = {
+          home-manager-module = { emacsUserDir }: {
             programs.emacs.enable = true;
 
             home.file.".emacs.d/early-init.el".text = ''
-              (menu-bar-mode -1)
-              (tool-bar-mode -1)
-              (scroll-bar-mode -1)
+              (setq user-emacs-directory "${emacsUserDir}")
 
-              (add-to-list 'default-frame-alist '(fullscreen . maximized))
+              (let ((early-init-file (expand-file-name "early-init.el" user-emacs-directory)))
+                (load early-init-file t t))
+            '';
+
+            home.file.".emacs.d/init.el".text = ''
+              ;; install straight.el
+              (defvar bootstrap-version)
+              (let ((bootstrap-file
+                     (expand-file-name
+                      "straight/repos/straight.el/bootstrap.el"
+                      (or (bound-and-true-p straight-base-dir)
+                          user-emacs-directory)))
+                    (bootstrap-version 7))
+                (unless (file-exists-p bootstrap-file)
+                  (with-current-buffer
+                      (url-retrieve-synchronously
+                       "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+                       'silent 'inhibit-cookies)
+                    (goto-char (point-max))
+                    (eval-print-last-sexp)))
+                (load bootstrap-file nil 'nomessage))
+
+              (let ((init-file (expand-file-name "init.el" user-emacs-directory)))
+                (load init-file t t))
             '';
           };
         };

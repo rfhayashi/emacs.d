@@ -18,7 +18,7 @@
             home.username = "example";
             home.homeDirectory = "/home/example";
           }
-          emacs.lib.home-manager-module ];
+          (emacs.lib.home-manager-module { emacsUserDir = "/home/example/dev/emacs.d"; }) ];
       };
     };
 }
