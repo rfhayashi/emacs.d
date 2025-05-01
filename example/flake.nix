@@ -17,8 +17,10 @@
           { home.stateVersion = "24.11";
             home.username = "example";
             home.homeDirectory = "/home/example";
+            programs.emacs.userDir = "/home/example/dev/emacs.d";
           }
-          (emacs.lib.home-manager-module { emacsUserDir = "/home/example/dev/emacs.d"; }) ];
+          emacs.lib.home-manager-module
+        ];
       };
     };
 }
