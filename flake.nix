@@ -11,11 +11,9 @@
       systems = [ "x86_64-linux" ];
       flake = {
         lib = {
-          home-manager-module = { config, lib, ...}: {
+          home-manager-module = { config, lib, ... }: {
             options = {
-              programs.emacs.userDir = lib.mkOption {
-                type = lib.types.str;
-              };
+              programs.emacs.userDir = lib.mkOption { type = lib.types.str; };
             };
             config = {
               programs.emacs.enable = true;
