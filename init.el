@@ -183,6 +183,11 @@
 
 (use-package cue-mode)
 
+(use-package expand-region
+  :general
+  (space-key-map
+   "ke" 'er/expand-region))
+
 ;; setup
 (let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))
        (files (thread-last
