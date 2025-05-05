@@ -30,10 +30,10 @@
         lib = {
           home-manager-module = { config, lib, pkgs, ... }:
             let
-              treeSitterNix = treeSitterBuild {
-                lang = "nix";
-                inherit pkgs;
-              };
+	      treeSitterLanguages = [ "nix" "clojure" ];
+	      treeSitterPackages = map (lang: treeSitterBuild { inherit lang pkgs; }) treeSitterLanguages;
+	      treeSitPaths = map (pkg: ''"${pkg}"'') treeSitterPackages;
+	      treeSitExtraLoadPath = lib.concatStringsSep " " treeSitPaths;
             in {
               options = {
                 programs.emacs.userDir = lib.mkOption { type = lib.types.str; };
@@ -57,7 +57,7 @@
 
                   (setq user-emacs-directory "${config.programs.emacs.userDir}")
 
-                  (setq treesit-extra-load-path '("${treeSitterNix}")) 
+                  (setq treesit-extra-load-path '(${treeSitExtraLoadPath}))
 
                   (let ((early-init-file (expand-file-name "early-init.el" user-emacs-directory)))
                     (load early-init-file t t))
