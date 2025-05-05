@@ -183,10 +183,17 @@
 
 (use-package cue-mode)
 
-(use-package expand-region
+(use-package expreg
   :general
   (space-key-map
-   "ke" 'er/expand-region))
+   "ke" 'expreg-expand)
+  :config
+  (repeat-mode 1)
+  (defvar-keymap expreg-repeat-map
+    :repeat t
+    "e" 'expreg-expand
+    "-" 'expreg-contract)
+  (put 'expreg-expand 'repeat-map 'expreg-repeat-map))
 
 ;; setup
 (let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))
