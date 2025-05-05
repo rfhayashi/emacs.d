@@ -1,9 +1,11 @@
 ;;; -*- lexical-binding: t; -*-
 
-(use-package clojure-mode
+(use-package clojure-ts-mode
   :hook
-  (clojure-mode . enable-paredit-mode)
-  (clojure-mode . eglot-ensure))
+  (clojure-ts-mode . enable-paredit-mode)
+  (clojure-ts-mode . eglot-ensure)
+  :init
+  (add-to-list 'major-mode-remap-alist '(clojure-mode . clojure-ts-mode)))
 
 (defun my-cider-babashka-repl-p ()
   (let ((repl-buf (cider-current-repl)))
