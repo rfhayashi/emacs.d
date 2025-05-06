@@ -83,7 +83,7 @@
 				  (expand-file-name "~/.clojure/injections/src/user.clj")
 				  (expand-file-name "~/.clojure/injections")))
   :general
-  (leader-def :keymaps 'clojure-mode-map
+  (leader-def :keymaps 'clojure-ts-mode-map
     "eb" 'cider-eval-buffer
     "ee" 'cider-eval-last-sexp
     "ef" 'cider-eval-defun-at-point
