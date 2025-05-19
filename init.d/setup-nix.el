@@ -1,8 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
 
+(use-package nix-mode)
+
 (use-package nix-ts-mode
   :hook
-  (nix-mode . eglot-ensure)
+  (nix-ts-mode . eglot-ensure)
   :init
   (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-ts-mode)))
 
