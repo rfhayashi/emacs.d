@@ -1,11 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 
-(use-package clojure-ts-mode
+(use-package clojure-mode
   :hook
-  (clojure-ts-mode . enable-paredit-mode)
-  (clojure-ts-mode . eglot-ensure)
-  :init
-  (add-to-list 'major-mode-remap-alist '(clojure-mode . clojure-ts-mode)))
+  (clojure-mode . enable-paredit-mode)
+  (clojure-mode . eglot-ensure))
 
 (defun my-cider-babashka-repl-p ()
   (let ((repl-buf (cider-current-repl)))
@@ -83,7 +81,7 @@
 				  (expand-file-name "~/.clojure/injections/src/user.clj")
 				  (expand-file-name "~/.clojure/injections")))
   :general
-  (leader-def :keymaps 'clojure-ts-mode-map
+  (leader-def :keymaps 'clojure-mode-map
     "eb" 'cider-eval-buffer
     "ee" 'cider-eval-last-sexp
     "ef" 'cider-eval-defun-at-point

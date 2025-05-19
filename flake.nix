@@ -30,7 +30,7 @@
         lib = {
           home-manager-module = { config, lib, pkgs, ... }:
             let
-	      treeSitterLanguages = [ "nix" "clojure" ];
+	      treeSitterLanguages = [ "nix" ];
 	      treeSitterPackages = map (lang: treeSitterBuild { inherit lang pkgs; }) treeSitterLanguages;
 	      treeSitPaths = map (pkg: ''"${pkg}"'') treeSitterPackages;
 	      treeSitExtraLoadPath = lib.concatStringsSep " " treeSitPaths;
