@@ -74,7 +74,7 @@
   (cider-repl-pop-to-buffer-on-connect nil)
   (cider-test-defining-forms '("deftest" "defspec"))
   (clojure-toplevel-inside-comment-form t)
-  (cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow")
+  (cider-clojure-cli-global-options "-Sforce -J-XX:-OmitStackTraceInFastThrow")
   (cider-clojure-cli-global-aliases ":user:dev")
   (cider-babashka-global-options (format
 				  "--init %s -Sdeps '{:deps {djblue/portal {:mvn/version \"0.58.5\"} global/user {:local/root \"%s\"}}}'"
