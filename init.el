@@ -183,6 +183,8 @@
 
 (use-package cue-mode)
 
+(use-package just-mode)
+
 (use-package expreg
   :general
   (space-key-map
