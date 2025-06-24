@@ -149,16 +149,6 @@
 	("C-j" . 'corfu-next)
 	("C-k" . 'corfu-previous)))
 
-;; (use-package eglot
-;;   :straight nil
-;;   :custom
-;;   (eldoc-echo-area-use-multiline-p nil)
-;;   :general
-;;   (leader-def :keymaps 'eglot-mode-map
-;;     "gg" 'xref-find-definitions
-;;     "gr" 'xref-find-references
-;;     "rr" 'eglot-rename))
-
 (use-package lsp-mode
   :general
   (leader-def :keymaps 'lsp-mode-map
