@@ -3,7 +3,7 @@
 (use-package clojure-mode
   :hook
   (clojure-mode . enable-paredit-mode)
-  (clojure-mode . eglot-ensure))
+  (clojure-mode . lsp-deferred))
 
 (defun my-cider-babashka-repl-p ()
   (let ((repl-buf (cider-current-repl)))

@@ -12,3 +12,4 @@ straight/build-cache.el
 /eshell/
 /tramp
 /.direnv/
+/.lsp-session-v1

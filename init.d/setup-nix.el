@@ -4,7 +4,7 @@
 
 (use-package nix-ts-mode
   :hook
-  (nix-ts-mode . eglot-ensure)
+  (nix-ts-mode . lsp-deferred)
   :init
   (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-ts-mode)))
 
