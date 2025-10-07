@@ -13,3 +13,4 @@ straight/build-cache.el
 /tramp
 /.direnv/
 /.lsp-session-v1
+/projectile-bookmarks.eld
