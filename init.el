@@ -128,12 +128,16 @@
   :init
   (marginalia-mode))
 
+(defun my/projectile-ripgrep-consult ()
+  (interactive)
+  (consult-ripgrep (projectile-project-root)))
+
 (use-package consult
   :general
   (:states '(normal visual)
-   "/" 'consult-line)
+	   "/" 'consult-line)
   (space-key-map
-   "/" 'consult-git-grep
+   "/" 'my/projectile-ripgrep-consult
    "bb" 'consult-buffer))
 
 (use-package corfu
