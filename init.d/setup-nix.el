@@ -2,11 +2,13 @@
 
 (use-package nix-mode)
 
-(use-package nix-ts-mode
-  :hook
-  (nix-ts-mode . lsp-deferred)
-  :init
-  (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-ts-mode)))
+;; until we setup nix tree sitter in macos
+(when (eq system-type 'gnu/linux)
+  (use-package nix-ts-mode
+    :hook
+    (nix-ts-mode . lsp-deferred)
+    :init
+    (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-ts-mode))))
 
 (defun my-nixos-switch ()
   (interactive)
