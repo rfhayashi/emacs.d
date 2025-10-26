@@ -42,9 +42,7 @@
   "Run test around point"
   (interactive)
   (cider-eval-defun-at-point) 
-  (if (my-cider-babashka-repl-p)
-      (my-babashka-run-focused-test)
-    (cider-test-run-test)))
+  (cider-test-run-test))
 
 ;; TODO support babashka
 (defun my-cider-test-run-ns-tests ()
