@@ -4,7 +4,10 @@
 
 (use-package nix-ts-mode
   :hook
-  (nix-ts-mode . lsp-deferred)
+  (nix-ts-mode . (lambda ()
+		   (setq-local electric-indent-inhibit t)
+		   (electric-indent-local-mode -1)
+		   (lsp-deferred)))
   :init
   (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-ts-mode)))
 
