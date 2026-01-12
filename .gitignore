@@ -14,3 +14,4 @@ straight/build-cache.el
 /.direnv/
 /.lsp-session-v1
 /projectile-bookmarks.eld
+/eca/
