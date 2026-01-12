@@ -10,6 +10,13 @@
 
 (straight-use-package 'use-package)
 
+;; make emacs initialize properly in macos
+;; loading environment variables from shell
+(use-package exec-path-from-shell
+  :config
+  (when (memq window-system '(ns))
+    (exec-path-from-shell-initialize)))
+
 (use-package a)
 (use-package s)
 
