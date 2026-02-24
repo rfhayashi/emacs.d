@@ -6,10 +6,7 @@
 (when (eq system-type 'gnu/linux)
   (use-package nix-ts-mode
     :hook
-    (nix-ts-mode . (lambda ()
-		     (setq-local electric-indent-inhibit t)
-		     (electric-indent-local-mode -1)
-		     (lsp-deferred)))
+    (nix-ts-mode . lsp-deferred)
     :init
     (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-ts-mode))))
 
