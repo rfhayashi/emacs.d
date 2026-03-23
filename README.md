@@ -15,3 +15,4 @@ This is an example of a `~/.emacs-profiles.el`:
 
 This is constantly evolving and there are no guarantees that it will work everywhere,
 but feel free to use it entirely or copy parts of it.
+
