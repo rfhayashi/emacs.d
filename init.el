@@ -147,16 +147,6 @@
    "/" 'my/projectile-ripgrep-consult
    "bb" 'consult-buffer))
 
-(use-package corfu
-  :custom
-  (corfu-auto t)
-  :init
-  (global-corfu-mode)
-  :bind
-  (:map corfu-map
-	("C-j" . 'corfu-next)
-	("C-k" . 'corfu-previous)))
-
 (use-package lsp-mode
   :general
   (leader-def :keymaps 'lsp-mode-map
