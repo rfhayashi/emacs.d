@@ -152,7 +152,9 @@
   (leader-def :keymaps 'lsp-mode-map
     "gg" 'xref-find-definitions
     "gr" 'xref-find-references
-    "rr" 'lsp-rename))
+    "rr" 'lsp-rename)
+  :custom
+  (lsp-diagnostics-provider :flymake))
 
 (use-package paredit
   :diminish paredit-mode
