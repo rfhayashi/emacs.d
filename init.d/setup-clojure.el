@@ -93,6 +93,10 @@
     "tt" 'my-cider-test-run-focused-test
     "'" 'cider-jack-in)
   :config
+  (cider-add-to-alist 'cider-jack-in-dependencies
+                      "org.corfield/rephrase" "1.0.6")
+  (add-to-list 'cider-jack-in-nrepl-middlewares
+               "org.corfield.rephrase.nrepl/wrap-rephrase")
   (put-clojure-indent 'match 1)
   (define-clojure-indent
    (def-source '(1 nil nil (1)))

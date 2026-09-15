@@ -194,6 +194,15 @@
     "-" 'expreg-contract)
   (put 'expreg-expand 'repeat-map 'expreg-repeat-map))
 
+(let ((state-dir
+       (expand-file-name
+        "emacs/"
+        (or (getenv "XDG_STATE_HOME")
+            (expand-file-name "~/.local/state/")))))
+  (make-directory state-dir t)
+  (setq custom-file (expand-file-name "custom.el" state-dir))
+  (load custom-file 'noerror 'nomessage))
+
 ;; setup
 (let* ((initd-dir (expand-file-name "init.d" user-emacs-directory))
        (files (thread-last
