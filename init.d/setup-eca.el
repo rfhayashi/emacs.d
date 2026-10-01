@@ -13,6 +13,7 @@
 
 (use-package eca
   :hook (eca-chat-mode . company-mode)
+  :custom (eca-chat-window-height 0.40)
   :config
   (advice-add 'eca-chat--display-buffer :around
               #'my/eca-chat-display-by-frame-width)
