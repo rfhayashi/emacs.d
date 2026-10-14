@@ -147,6 +147,11 @@
    "/" 'my/projectile-ripgrep-consult
    "bb" 'consult-buffer))
 
+(use-package flymake
+  :straight nil
+  :custom
+  (trusted-content :all))
+
 (use-package lsp-mode
   :general
   (leader-def :keymaps 'lsp-mode-map
